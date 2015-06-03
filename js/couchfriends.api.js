@@ -24,10 +24,10 @@ var COUCHFRIENDS = {
     status: {
         connected: false
     },
-/**
- * Global settings for COUCHFRIENDS api
- * @type {object} settings list of settings
- */
+    /**
+     * Global settings for COUCHFRIENDS api
+     * @type {object} settings list of settings
+     */
     settings: {
         socket: {
             apiKey: '',
@@ -47,6 +47,7 @@ COUCHFRIENDS.callbacks['player.left'] = 'playerLeft';
 COUCHFRIENDS.callbacks['player.join'] = 'playerJoined';
 COUCHFRIENDS.callbacks['player.orientation'] = 'playerOrientation';
 COUCHFRIENDS.callbacks['player.identify'] = 'playerIdentify';
+COUCHFRIENDS.callbacks['error'] = 'error';
 
 /**
  * Connect function. This will connect the game to the websocket server.
@@ -70,10 +71,13 @@ COUCHFRIENDS.connect = function () {
 
     COUCHFRIENDS._socket.onmessage = function (event) {
         var data = JSON.parse(event.data);
-        if (typeof data.topic != 'string' || typeof data.type != 'string') {
-            return;
+        var callback = '';
+        if (typeof data.topic == 'string') {
+            callback += data.topic;
         }
-        var callback = data.topic + '.' + data.type;
+        if (typeof data.action == 'string') {
+            callback += '.' + data.action;
+        }
         if (typeof COUCHFRIENDS.callbacks[callback] == 'undefined') {
             return;
         }
@@ -96,10 +100,11 @@ COUCHFRIENDS.connect = function () {
  */
 COUCHFRIENDS.send = function (data) {
 
-    if (this.status.connected == false) {
+    if (COUCHFRIENDS.status.connected == false) {
         COUCHFRIENDS.emit('error', 'Message not send because game is not connected to server.');
         return false;
     }
+    console.log(data);
     COUCHFRIENDS._socket.send(JSON.stringify(data));
 };
 
@@ -118,7 +123,6 @@ COUCHFRIENDS.on('error', function(message) {
  * a successful connection.
  */
 COUCHFRIENDS.on('connect', function() {
-    hostGame();
 });
 
 /**
