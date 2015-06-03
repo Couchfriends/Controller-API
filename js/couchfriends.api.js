@@ -113,9 +113,10 @@ Emitter(COUCHFRIENDS);
 /**
  * Callback when an error has occurred.
  *
- * @param {string} message The error string
+ * @param {object} data list with error details.
+ * @param {string} data.message the error
  */
-COUCHFRIENDS.on('error', function(message) {
+COUCHFRIENDS.on('error', function(data) {
 });
 
 /**
