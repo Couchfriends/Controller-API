@@ -29,11 +29,9 @@ var COUCHFRIENDS = {
      * @type {object} settings list of settings
      */
     settings: {
-        socket: {
-            apiKey: '',
-            host: '',
-            port: ''
-        }
+        apiKey: '',
+        host: '',
+        port: ''
     }
 };
 
@@ -60,14 +58,14 @@ COUCHFRIENDS.connect = function () {
         COUCHFRIENDS.emit('error', 'Websockets are not supported by device.');
         return false;
     }
-    if (COUCHFRIENDS.settings.socket.host == '' || COUCHFRIENDS.settings.socket.port == '') {
+    if (COUCHFRIENDS.settings.host == '' || COUCHFRIENDS.settings.port == '') {
         COUCHFRIENDS.emit('error', 'Host or port is empty.');
         return false;
     }
     if (COUCHFRIENDS.status.connected == true) {
         return false;
     }
-    COUCHFRIENDS._socket = new WebSocket("ws://" + COUCHFRIENDS.settings.socket.host + ":" + COUCHFRIENDS.settings.socket.port);
+    COUCHFRIENDS._socket = new WebSocket("ws://" + COUCHFRIENDS.settings.host + ":" + COUCHFRIENDS.settings.port);
 
     COUCHFRIENDS._socket.onmessage = function (event) {
         var data = JSON.parse(event.data);
@@ -104,7 +102,6 @@ COUCHFRIENDS.send = function (data) {
         COUCHFRIENDS.emit('error', 'Message not send because game is not connected to server.');
         return false;
     }
-    console.log(data);
     COUCHFRIENDS._socket.send(JSON.stringify(data));
 };
 
@@ -136,7 +133,7 @@ COUCHFRIENDS.on('disconnect', function() {
  * Callback after the server started the game and let players allow to join.
  *
  * @param {object} data List with game data
- * @param {int} data.code The game code players need to fill to join this game
+ * @param {string} data.code The game code players need to fill to join this game
  */
 COUCHFRIENDS.on('gameStart', function(data) {
     console.log('Game started with code: '+ data.code);

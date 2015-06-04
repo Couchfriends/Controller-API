@@ -3,20 +3,69 @@ API for the Couchfriends mobile controller interface
 
 ## Installation
 
+```html
     <script src="/path/to/couchfriends.api.js"></script>
+```
 
-## API
+# API
 
-### Initialize 
+## Connect 
 
-Couchfriends api uses the global `window.COUCHFRIENDS` or `COUCHFRIENDS` object variable. Use the following function to initialize the api.
+Couchfriends api uses the global `window.COUCHFRIENDS` or `COUCHFRIENDS` object variable. The following code will
+connect you to the Couchfriends websocket server.
 
-    COUCHFRIENDS.init();
+```js
+    COUCHFRIENDS.settings.apiKey = '<your couchfriends.com api key>';
+    COUCHFRIENDS.settings.host = 'couchfriends.com';
+    COUCHFRIENDS.settings.port = '1234';
+    COUCHFRIENDS.connect();
+```
 
-### Callbacks
+## Sending data to players/server
 
-Each data that is received from the server is passed through the `.on('type', function(){});` callback. For example when you are connected to the server it will call the .on('connect') function.
+You can use the `.send()` function to send data to the server or (one or all) of you connected clients.
+Sending data must always be an json object with the following parameters:
+`topic` {string} The type of data to send. e.g. `game`
+`action` {string} (optional) the sub type/action to send. e.g. `host`
+`data` {object} (optional) Additional data to send.
 
+The following example will request the server to host a new game. See the `.on('gameStart');` callback for more info.
+
+```js
+    var jsonData = {
+        topic: 'game',
+        action: 'host',
+        data: { }
+    };
+    COUCHFRIENDS.send(jsonData);
+```
+
+
+## Callbacks
+
+Each data that is received from the server is passed through the `.on('type', function(){});` callback.
+ 
+### on.('connect')
+
+Called after a successful connection to the Websocket server.
+
+```js
     COUCHFRIENDS.on('connect', function() {
-        // Connected to websocket server and ready for sending and receiving data
+        console.log('Ready for action!');
     });
+```
+
+### on.('gameStart')
+Game is started and ready for players to connect.
+
+```js
+    /**
+     * Callback after the server started the game and let players allow to join.
+     *
+     * @param {object} data List with game data
+     * @param {string} data.code The game code players need to fill to join this game
+     */
+    COUCHFRIENDS.on('gameStart', function(data) {
+        console.log('Game started with code: '+ data.code);
+    });
+```
