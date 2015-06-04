@@ -14,7 +14,7 @@ API for the Couchfriends mobile controller interface
 Couchfriends api uses the global `window.COUCHFRIENDS` or `COUCHFRIENDS` object variable. The following code will
 connect you to the Couchfriends websocket server.
 
-```js
+```javascript
     COUCHFRIENDS.settings.apiKey = '<your couchfriends.com api key>';
     COUCHFRIENDS.settings.host = 'couchfriends.com';
     COUCHFRIENDS.settings.port = '1234';
@@ -26,7 +26,7 @@ connect you to the Couchfriends websocket server.
 You can use the `.send()` function to send data to the server or (one or all) of you connected clients.
 Sending data must always be an json object. Following example of hosting a new game.
 
-```js
+```javascript
     /**
      * Request a new game host.
      *
@@ -42,7 +42,6 @@ Sending data must always be an json object. Following example of hosting a new g
     COUCHFRIENDS.send(jsonData);
 ```
 
-
 ## Callbacks
 
 Each data that is received from the server is passed through the `.on('type', function(){});` callback.
@@ -51,7 +50,7 @@ Each data that is received from the server is passed through the `.on('type', fu
 
 Called after a successful connection to the Websocket server.
 
-```js
+```javascript
     COUCHFRIENDS.on('connect', function() {
         console.log('Ready for action!');
     });
@@ -60,7 +59,7 @@ Called after a successful connection to the Websocket server.
 ### on.('gameStart')
 Game is started and ready for players to connect.
 
-```js
+```javascript
     /**
      * Callback after the server started the game and let players allow to join.
      *
@@ -69,5 +68,21 @@ Game is started and ready for players to connect.
      */
     COUCHFRIENDS.on('gameStart', function(data) {
         console.log('Game started with code: '+ data.code);
+    });
+```
+
+### on.('playerJoined')
+A new player joined the game.
+
+```javascript
+    /**
+     * Callback when a player connected to the game.
+     *
+     * @param {object} data list with the player information
+     * @param {int} data.id The unique identifier of the player
+     * @param {string} [data.name] The name of the player
+     */
+    COUCHFRIENDS.on('playerJoined', function(data) {
+        console.log('Player joined. Player id: ' + data.id);
     });
 ```
