@@ -25,9 +25,10 @@ connect you to the Couchfriends websocket server.
 
 You can use the `.send()` function to send data to the server or (one or all) of you connected clients.
 Sending data must always be an json object with the following parameters:
-`topic` {string} The type of data to send. e.g. `game`
-`action` {string} (optional) the sub type/action to send. e.g. `host`
-`data` {object} (optional) Additional data to send.
+
+* @param {string} `topic` The type of data to send. e.g. `game`
+* @param {sting} [`action`] The sub type/action to send. e.g. `host`
+* @param {object} [`data`] Additional data to send.
 
 The following example will request the server to host a new game. See the `.on('gameStart');` callback for more info.
 
