@@ -86,3 +86,38 @@ A new player joined the game.
         console.log('Player joined. Player id: ' + data.id);
     });
 ```
+
+### on.('playerLeft')
+One of the players disconnected or left the game.
+
+```javascript
+    /**
+     * Callback when a player disconnect from the game.
+     *
+     * @param {object} data list with the player information
+     * @param {int} data.id the unique identifier of the player that left
+     */
+    COUCHFRIENDS.on('playerLeft', function(data) {
+        console.log('Player left. Player id: ' + data.id);
+    });
+```
+
+### on.('playerOrientation')
+A player's device orientation has changed.
+
+```javascript
+    /**
+     * Callback when a player chances the orientation of his device. Useful for movement tracking.
+     *
+     * For performance reasons this function will only be called if the orientation has changed since the previous frame.
+     *
+     * @param {object} data list with the player id and orientation
+     * @param {int} data.id The unique identifier of the player
+     * @param {float} [data.x] The x-as orientation (-1 to 1). E.g. -0.871
+     * @param {float} [data.y] The y-as orientation (-1 to 1). E.g. 0.12
+     * @param {float} [data.z] The z-as orientation (-1 to 1). E.g. -0.301
+     */
+    COUCHFRIENDS.on('playerOrientation', function(data) {
+        console.log('Player orientation changed. Player id: ' + data.id + ' Orientation: ' + data.x + ', ' + data.y + ', ' + data.z);
+    });
+```
