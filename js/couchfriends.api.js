@@ -44,6 +44,7 @@ COUCHFRIENDS.callbacks['game.start'] = 'gameStart';
 COUCHFRIENDS.callbacks['player.left'] = 'playerLeft';
 COUCHFRIENDS.callbacks['player.join'] = 'playerJoined';
 COUCHFRIENDS.callbacks['player.orientation'] = 'playerOrientation';
+COUCHFRIENDS.callbacks['player.click'] = 'playerClick';
 COUCHFRIENDS.callbacks['player.identify'] = 'playerIdentify';
 COUCHFRIENDS.callbacks['error'] = 'error';
 
@@ -136,7 +137,7 @@ COUCHFRIENDS.on('disconnect', function() {
  * @param {string} data.code The game code players need to fill to join this game
  */
 COUCHFRIENDS.on('gameStart', function(data) {
-    console.log('Game started with code: '+ data.code);
+    //console.log('Game started with code: '+ data.code);
 });
 
 /**
@@ -146,7 +147,7 @@ COUCHFRIENDS.on('gameStart', function(data) {
  * @param {int} data.id the unique identifier of the player that left
  */
 COUCHFRIENDS.on('playerLeft', function(data) {
-    console.log('Player left. Player id: ' + data.id);
+    //console.log('Player left. Player id: ' + data.id);
 });
 
 /**
@@ -157,7 +158,7 @@ COUCHFRIENDS.on('playerLeft', function(data) {
  * @param {string} [data.name] The name of the player
  */
 COUCHFRIENDS.on('playerJoined', function(data) {
-    console.log('Player joined. Player id: ' + data.id);
+    //console.log('Player joined. Player id: ' + data.id);
 });
 
 /**
@@ -172,7 +173,7 @@ COUCHFRIENDS.on('playerJoined', function(data) {
  * @param {float} [data.z] The z-as orientation (-1 to 1). E.g. -0.301
  */
 COUCHFRIENDS.on('playerOrientation', function(data) {
-    console.log('Player orientation changed. Player id: ' + data.id + ' Orientation: ' + data.x + ', ' + data.y + ', ' + data.z);
+    //console.log('Player orientation changed. Player id: ' + data.id + ' Orientation: ' + data.x + ', ' + data.y + ', ' + data.z);
 });
 
 /**
@@ -184,5 +185,15 @@ COUCHFRIENDS.on('playerOrientation', function(data) {
  * names and characters that might be included in the name.
  */
 COUCHFRIENDS.on('playerIdentify', function(data) {
-    console.log('Player orientation changed. Player id: ' + data.id + ' Orientation: ' + data.x + ', ' + data.y + ', ' + data.z);
+    //console.log('Player orientation changed. Player id: ' + data.id + ' Orientation: ' + data.x + ', ' + data.y + ', ' + data.z);
+});
+
+/**
+ * Callback when a player tapped canvas up and down
+ *
+ * @param {object} data list with the player information
+ * @param {int} data.id The unique identifier of the player
+ */
+COUCHFRIENDS.on('playerClick', function(data) {
+    //console.log('Player orientation changed. Player id: ' + data.id + ' Orientation: ' + data.x + ', ' + data.y + ', ' + data.z);
 });
