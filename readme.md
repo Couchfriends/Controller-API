@@ -121,3 +121,20 @@ A player's device orientation has changed.
         console.log('Player orientation changed. Player id: ' + data.id + ' Orientation: ' + data.x + ', ' + data.y + ', ' + data.z);
     });
 ```
+
+### on.('playerClick')
+A player clicked/tapped on the screen.
+
+```javascript
+    /**
+     * Callback when a player tapped canvas up and down
+     *
+     * @param {object} data list with the player information
+     * @param {int} data.id The unique identifier of the player
+     * @param {float} data.x Left position clicked in percentage
+     * @param {float} data.y Top position clicked in percentage
+     */
+    COUCHFRIENDS.on('playerClick', function(data) {
+        //console.log('Player clicked. Player id: ' + data.id + ' Click position: ' + data.x + ', ' + data.y);
+    });
+```

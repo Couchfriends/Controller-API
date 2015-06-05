@@ -197,5 +197,5 @@ COUCHFRIENDS.on('playerIdentify', function(data) {
  * @param {float} data.y Top position clicked in percentage
  */
 COUCHFRIENDS.on('playerClick', function(data) {
-    //console.log('Player clicked. Player id: ' + data.id + ' Click poisition: ' + data.x + ', ' + data.y);
+    //console.log('Player clicked. Player id: ' + data.id + ' Click position: ' + data.x + ', ' + data.y);
 });
