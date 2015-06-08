@@ -1,10 +1,28 @@
 # Controller API for Couchfriends
-API for the Couchfriends mobile controller interface
+The Couchfriends API can be included in existing webgames to enable real-time gaming.
 
 ## Installation
+Include the api in the `<head>` of your game.
 
 ```html
-    <script src="/path/to/couchfriends.api.js"></script>
+    // Hosted it in your project
+    <script src="/path/to/js/couchfriends.api-latest.js"></script>
+    // Using our CDN
+    <script src="http://cdn.couchfriends.com/js/couchfriends.api-latest.js"></script>
+```
+
+# Building the Couchfriends API
+
+Download or fork the source in your webroot or project directory and run:
+
+```
+    npm install
+```
+
+To build the latest version run:
+
+```
+    grunt
 ```
 
 # API
@@ -119,22 +137,5 @@ A player's device orientation has changed.
      */
     COUCHFRIENDS.on('playerOrientation', function(data) {
         console.log('Player orientation changed. Player id: ' + data.id + ' Orientation: ' + data.x + ', ' + data.y + ', ' + data.z);
-    });
-```
-
-### on.('playerClick')
-A player clicked/tapped on the screen.
-
-```javascript
-    /**
-     * Callback when a player tapped canvas up and down
-     *
-     * @param {object} data list with the player information
-     * @param {int} data.id The unique identifier of the player
-     * @param {float} data.x Left position clicked in percentage
-     * @param {float} data.y Top position clicked in percentage
-     */
-    COUCHFRIENDS.on('playerClick', function(data) {
-        //console.log('Player clicked. Player id: ' + data.id + ' Click position: ' + data.x + ', ' + data.y);
     });
 ```
