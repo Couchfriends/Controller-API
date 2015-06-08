@@ -68,7 +68,10 @@ COUCHFRIENDS.init = function () {
     link.href = 'http://localhost/couchfriends-controller-api/src/couchfriends.ui.css';
     link.media = 'all';
     head.appendChild(link);
-    document.body.innerHTML += '<div id="COUCHFRIENDS-overlay"><div id="COUCHFRIENDS-popup"></div><div id="COUCHFRIENDS-notifications"></div></div>';
+    var containerDiv = document.createElement("div");
+    containerDiv.id = 'COUCHFRIENDS-overlay';
+    containerDiv.innerHTML = '<div id="COUCHFRIENDS-popup"></div><div id="COUCHFRIENDS-notifications"></div>';
+    document.body.appendChild(containerDiv);
 };
 
 /**
