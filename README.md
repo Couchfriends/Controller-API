@@ -4,7 +4,7 @@ API for the Couchfriends mobile controller interface
 ## Installation
 
 ```html
-    <script src="/path/to/couchfriends.api.js"></script>
+    <script src="http://cdn.couchfriends.com/js/couchfriends.api-latest.js"></script>
 ```
 
 # API
