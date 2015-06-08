@@ -18,9 +18,11 @@
 function Emitter(t){return t?mixin(t):void 0}function mixin(t){for(var e in Emitter.prototype)t[e]=Emitter.prototype[e];return t}Emitter.prototype.on=Emitter.prototype.addEventListener=function(t,e){return this._callbacks=this._callbacks||{},(this._callbacks["$"+t]=this._callbacks["$"+t]||[]).push(e),this},Emitter.prototype.once=function(t,e){function i(){this.off(t,i),e.apply(this,arguments)}return i.fn=e,this.on(t,i),this},Emitter.prototype.off=Emitter.prototype.removeListener=Emitter.prototype.removeAllListeners=Emitter.prototype.removeEventListener=function(t,e){if(this._callbacks=this._callbacks||{},0==arguments.length)return this._callbacks={},this;var i=this._callbacks["$"+t];if(!i)return this;if(1==arguments.length)return delete this._callbacks["$"+t],this;for(var r,s=0;s<i.length;s++)if(r=i[s],r===e||r.fn===e){i.splice(s,1);break}return this},Emitter.prototype.emit=function(t){this._callbacks=this._callbacks||{};var e=[].slice.call(arguments,1),i=this._callbacks["$"+t];if(i){i=i.slice(0);for(var r=0,s=i.length;s>r;++r)i[r].apply(this,e)}return this},Emitter.prototype.listeners=function(t){return this._callbacks=this._callbacks||{},this._callbacks["$"+t]||[]},Emitter.prototype.hasListeners=function(t){return!!this.listeners(t).length};
 
 var COUCHFRIENDS = {
-    REVISION: '2',
+    REVISION: '3',
     _INIT: false,
     _socket: {}, // The Websocket object
+    _connectedPlayers: [],
+    _gameCode: '',
     // Object with current information and state over the game
     status: {
         connected: false
@@ -32,7 +34,11 @@ var COUCHFRIENDS = {
     settings: {
         apiKey: '',
         host: '',
-        port: ''
+        port: '',
+        ui: {
+            showNotifications: true,
+            showHowTo: true
+        }
     }
 };
 
@@ -59,9 +65,10 @@ COUCHFRIENDS.init = function () {
     link.rel  = 'stylesheet';
     link.type = 'text/css';
     link.href = 'http://cdn.couchfriends.com/js/couchfriends.ui.css';
+    link.href = 'http://localhost/couchfriends-controller-api/src/couchfriends.ui.css';
     link.media = 'all';
     head.appendChild(link);
-    document.body.innerHTML += '<div id="COUCHFRIENDS-overlay"><div id="COUCHFRIENDS-notifications"></div></div>';
+    document.body.innerHTML += '<div id="COUCHFRIENDS-overlay"><div id="COUCHFRIENDS-popup"></div><div id="COUCHFRIENDS-notifications"></div></div>';
 };
 
 /**
@@ -69,6 +76,9 @@ COUCHFRIENDS.init = function () {
  * @param message
  */
 COUCHFRIENDS.showNotification = function (message) {
+    if (COUCHFRIENDS.settings.ui.showNotifications == false) {
+        return;
+    }
     var id = Date.now();
     var notificationEl = document.createElement("div");
     notificationEl.className = 'COUCHFRIENDS-notification';
@@ -84,6 +94,25 @@ COUCHFRIENDS.showNotification = function (message) {
             }
         }, 1000);
     }, 3500);
+};
+
+COUCHFRIENDS.showHideHowToPopup = function() {
+    if (COUCHFRIENDS.settings.showHowTo == false) {
+        document.getElementById('COUCHFRIENDS-popup').style.display = 'none';
+        return;
+    }
+    if (COUCHFRIENDS._connectedPlayers.length > 0 || COUCHFRIENDS._gameCode == '') {
+        if (document.getElementById('COUCHFRIENDS-popup').offsetParent === null) {
+            return;
+        }
+        document.getElementById('COUCHFRIENDS-popup').className = 'COUCHFRIENDS-fadeOut';
+        return;
+    }
+    var message = 'Go to www.couchfriends.com with your <strong>phone</strong> or <strong>tablet</strong> and enter the code <strong id="COUCHFRIENDS-code">' + COUCHFRIENDS._gameCode +'</strong>';
+    document.getElementById('COUCHFRIENDS-popup').innerHTML = message;
+    if (document.getElementById('COUCHFRIENDS-popup').offsetParent !== null) {
+        document.getElementById('COUCHFRIENDS-popup').className = 'COUCHFRIENDS-fadeIn';
+    }
 };
 
 /**
@@ -178,6 +207,13 @@ COUCHFRIENDS.on('disconnect', function() {
 });
 
 /**
+ * Callback after the connection is lost from the WebSocket server.
+ */
+COUCHFRIENDS.on('_disconnect', function() {
+    COUCHFRIENDS._gameCode = '';
+});
+
+/**
  * Callback after the server started the game and let players allow to join.
  *
  * @param {object} data List with game data
@@ -185,6 +221,11 @@ COUCHFRIENDS.on('disconnect', function() {
  */
 COUCHFRIENDS.on('gameStart', function(data) {
     //console.log('Game started with code: '+ data.code);
+});
+
+COUCHFRIENDS.on('_gameStart', function(data) {
+    COUCHFRIENDS._gameCode = data.code;
+    COUCHFRIENDS.showHideHowToPopup();
 });
 
 /**
@@ -203,6 +244,8 @@ COUCHFRIENDS.on('_playerLeft', function(data) {
         playerName = data.name;
     }
     COUCHFRIENDS.showNotification('Player "' + playerName + '" left.');
+    COUCHFRIENDS._connectedPlayers.splice(COUCHFRIENDS._connectedPlayers.indexOf(data.id), 1);
+    COUCHFRIENDS.showHideHowToPopup();
 });
 
 /**
@@ -222,6 +265,8 @@ COUCHFRIENDS.on('_playerJoined', function(data) {
         playerName = data.name;
     }
     COUCHFRIENDS.showNotification('Player "' + playerName + '" joined.');
+    COUCHFRIENDS._connectedPlayers.push(data.id);
+    COUCHFRIENDS.showHideHowToPopup();
 });
 
 /**
