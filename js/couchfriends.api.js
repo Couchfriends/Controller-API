@@ -18,7 +18,8 @@
 function Emitter(t){return t?mixin(t):void 0}function mixin(t){for(var e in Emitter.prototype)t[e]=Emitter.prototype[e];return t}Emitter.prototype.on=Emitter.prototype.addEventListener=function(t,e){return this._callbacks=this._callbacks||{},(this._callbacks["$"+t]=this._callbacks["$"+t]||[]).push(e),this},Emitter.prototype.once=function(t,e){function i(){this.off(t,i),e.apply(this,arguments)}return i.fn=e,this.on(t,i),this},Emitter.prototype.off=Emitter.prototype.removeListener=Emitter.prototype.removeAllListeners=Emitter.prototype.removeEventListener=function(t,e){if(this._callbacks=this._callbacks||{},0==arguments.length)return this._callbacks={},this;var i=this._callbacks["$"+t];if(!i)return this;if(1==arguments.length)return delete this._callbacks["$"+t],this;for(var r,s=0;s<i.length;s++)if(r=i[s],r===e||r.fn===e){i.splice(s,1);break}return this},Emitter.prototype.emit=function(t){this._callbacks=this._callbacks||{};var e=[].slice.call(arguments,1),i=this._callbacks["$"+t];if(i){i=i.slice(0);for(var r=0,s=i.length;s>r;++r)i[r].apply(this,e)}return this},Emitter.prototype.listeners=function(t){return this._callbacks=this._callbacks||{},this._callbacks["$"+t]||[]},Emitter.prototype.hasListeners=function(t){return!!this.listeners(t).length};
 
 var COUCHFRIENDS = {
-    REVISION: '1',
+    REVISION: '2',
+    _INIT: false,
     _socket: {}, // The Websocket object
     // Object with current information and state over the game
     status: {
@@ -49,12 +50,53 @@ COUCHFRIENDS.callbacks['player.identify'] = 'playerIdentify';
 COUCHFRIENDS.callbacks['error'] = 'error';
 
 /**
+ * Init some javascript and styles to the game for dynamic overviews
+ */
+COUCHFRIENDS.init = function () {
+    COUCHFRIENDS._INIT = true;
+    var head  = document.getElementsByTagName('head')[0];
+    var link  = document.createElement('link');
+    link.rel  = 'stylesheet';
+    link.type = 'text/css';
+    link.href = 'http://cdn.couchfriends.com/js/couchfriends.ui.css';
+    link.media = 'all';
+    head.appendChild(link);
+    document.body.innerHTML += '<div id="COUCHFRIENDS-overlay"><div id="COUCHFRIENDS-notifications"></div></div>';
+};
+
+/**
+ * Show notification and remove it after a short delay
+ * @param message
+ */
+COUCHFRIENDS.showNotification = function (message) {
+    var id = Date.now();
+    var notificationEl = document.createElement("div");
+    notificationEl.className = 'COUCHFRIENDS-notification';
+    notificationEl.id = 'COUCHFRIENDS-'+ id;
+    notificationEl.innerHTML = '<p>' + message +'</p>';
+    document.getElementById('COUCHFRIENDS-notifications').appendChild(notificationEl);
+    setTimeout(function() {
+        document.getElementById('COUCHFRIENDS-' + id).className = "COUCHFRIENDS-notification COUCHFRIENDS-notification-close";
+        setTimeout(function() {
+            var node = document.getElementById('COUCHFRIENDS-' + id);
+            if (node.parentNode) {
+                node.parentNode.removeChild(node);
+            }
+        }, 1000);
+    }, 3500);
+};
+
+/**
  * Connect function. This will connect the game to the websocket server.
  *
  * @returns {void|bool} false on error or return void. See the .on('connect', function() { }) callback for more info.
  */
+var counter = 0;
 COUCHFRIENDS.connect = function () {
 
+    if (COUCHFRIENDS._INIT == false) {
+        COUCHFRIENDS.init();
+    }
     if (typeof WebSocket == 'undefined') {
         COUCHFRIENDS.emit('error', 'Websockets are not supported by device.');
         return false;
@@ -80,6 +122,10 @@ COUCHFRIENDS.connect = function () {
         if (typeof COUCHFRIENDS.callbacks[callback] == 'undefined') {
             return;
         }
+        /**
+         * Internal functions
+         */
+        COUCHFRIENDS.emit('_' + COUCHFRIENDS.callbacks[callback], data.data);
         COUCHFRIENDS.emit(COUCHFRIENDS.callbacks[callback], data.data);
     };
     COUCHFRIENDS._socket.onopen = function() {
@@ -90,6 +136,7 @@ COUCHFRIENDS.connect = function () {
         COUCHFRIENDS.status.connected = false;
         COUCHFRIENDS.emit('disconnect');
     };
+
 };
 
 /**
@@ -149,6 +196,14 @@ COUCHFRIENDS.on('gameStart', function(data) {
 COUCHFRIENDS.on('playerLeft', function(data) {
     //console.log('Player left. Player id: ' + data.id);
 });
+COUCHFRIENDS.on('_playerLeft', function(data) {
+    //console.log('Player joined. Player id: ' + data.id);
+    var playerName = data.id;
+    if (data.name != null) {
+        playerName = data.name;
+    }
+    COUCHFRIENDS.showNotification('Player "' + playerName + '" left.');
+});
 
 /**
  * Callback when a player connected to the game.
@@ -159,6 +214,14 @@ COUCHFRIENDS.on('playerLeft', function(data) {
  */
 COUCHFRIENDS.on('playerJoined', function(data) {
     //console.log('Player joined. Player id: ' + data.id);
+});
+COUCHFRIENDS.on('_playerJoined', function(data) {
+    //console.log('Player joined. Player id: ' + data.id);
+    var playerName = data.id;
+    if (data.name != null) {
+        playerName = data.name;
+    }
+    COUCHFRIENDS.showNotification('Player "' + playerName + '" joined.');
 });
 
 /**
