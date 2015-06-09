@@ -169,3 +169,17 @@ COUCHFRIENDS.on('playerIdentify', function(data) {
     //console.log('Player with id: '+ data.id +' changed its name to: ' + data.name);
 });
 ```
+
+### on.('buttonClick')
+
+```javascript
+/**
+ * Callback when a player tapped a button
+ *
+ * @param {object} data list with the player and button information
+ * @param {int} data.id The unique identifier of the button
+ * @param {int} data.playerId The unique identifier of the player
+ */
+COUCHFRIENDS.on('buttonClick', function(data) {
+    //console.log('Player clicked a button. Player id: ' + data.playerId + ' Button id: ' + data.id);
+});

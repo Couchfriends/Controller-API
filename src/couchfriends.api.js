@@ -54,6 +54,7 @@ COUCHFRIENDS.callbacks['player.left'] = 'playerLeft';
 COUCHFRIENDS.callbacks['player.join'] = 'playerJoined';
 COUCHFRIENDS.callbacks['player.orientation'] = 'playerOrientation';
 COUCHFRIENDS.callbacks['player.click'] = 'playerClick';
+COUCHFRIENDS.callbacks['player.buttonClick'] = 'buttonClick';
 COUCHFRIENDS.callbacks['player.identify'] = 'playerIdentify';
 COUCHFRIENDS.callbacks['error'] = 'error';
 
@@ -124,7 +125,6 @@ COUCHFRIENDS.showHideHowToPopup = function() {
  *
  * @returns {void|bool} false on error or return void. See the .on('connect', function() { }) callback for more info.
  */
-var counter = 0;
 COUCHFRIENDS.connect = function () {
 
     if (COUCHFRIENDS._VARS.init == false) {
@@ -311,3 +311,38 @@ COUCHFRIENDS.on('playerIdentify', function(data) {
 COUCHFRIENDS.on('playerClick', function(data) {
     //console.log('Player clicked. Player id: ' + data.id + ' Click position: ' + data.x + ', ' + data.y);
 });
+
+/**
+ * Callback when a player tapped a button
+ *
+ * @param {object} data list with the player and button information
+ * @param {int} data.id The unique identifier of the button
+ * @param {int} data.playerId The unique identifier of the player
+ */
+COUCHFRIENDS.on('buttonClick', function(data) {
+    //console.log('Player clicked a button. Player id: ' + data.playerId + ' Button id: ' + data.id);
+});
+
+/**
+ * Example of sending a button to the controller
+ * @type {{topic: string, action: string, data: {id: string, playerId: string, type: string, label: string, color: string, size: {radius: string}, position: {right: string, bottom: string}}}}
+ */
+//var jsonData = {
+//    topic: 'interface',
+//    action: 'buttonAdd',
+//    data: {
+//        id: 'shootBall',
+//        playerId: this.id,
+//        type: 'circle',
+//        label: 'Shoot!',
+//        color: '#ff0000',
+//        size: {
+//            radius: '32px'
+//        },
+//        position: {
+//            right: 10',
+//            top: '50%'
+//        }
+//    }
+//};
+//COUCHFRIENDS.send(jsonData);
