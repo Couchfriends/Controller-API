@@ -34,7 +34,7 @@ Sending data must always be an json object. This example will host a new game.
      * @param {string} topic The type of data to send. e.g. 'game'
      * @param {sting} [action] The sub type/action to send. e.g. 'host'
      * @param {object} [data] Additional data to send.
-     */
+     */a
     var jsonData = {
         topic: 'game',
         action: 'host',
