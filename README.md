@@ -1,8 +1,9 @@
 # Controller API for Couchfriends
-API for the Couchfriends mobile controller interface
+With the Couchfriends Controller API you can connect your phone or tablet to your HTML5 game and use it as a controller. The Controller API uses Websockets to send and receive input.
 
 ## Installation
 
+Add the following code in the `<head>` of your game.
 ```html
     <script src="http://cdn.couchfriends.com/js/couchfriends.api-latest.js"></script>
 ```
@@ -16,7 +17,7 @@ connect you to the Couchfriends websocket server.
 
 ```javascript
     COUCHFRIENDS.settings.apiKey = '<your couchfriends.com api key>';
-    COUCHFRIENDS.settings.host = 'couchfriends.com';
+    COUCHFRIENDS.settings.host = 'ws.couchfriends.com';
     COUCHFRIENDS.settings.port = '1234';
     COUCHFRIENDS.connect();
 ```
@@ -24,7 +25,7 @@ connect you to the Couchfriends websocket server.
 ## Sending data to players/server
 
 You can use the `.send()` function to send data to the server or (one or all) of you connected clients.
-Sending data must always be an json object. Following example of hosting a new game.
+Sending data must always be an json object. This example will host a new game.
 
 ```javascript
     /**
