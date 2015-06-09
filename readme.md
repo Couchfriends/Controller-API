@@ -1,28 +1,11 @@
 # Controller API for Couchfriends
-The Couchfriends API can be included in existing webgames to enable real-time gaming.
+With the Couchfriends Controller API you can connect your phone or tablet to your HTML5 game and use it as a controller. The Controller API uses Websockets to send and receive input.
 
 ## Installation
-Include the api in the `<head>` of your game.
 
+Add the following code in the `<head>` of your game.
 ```html
-    // Hosted it in your project
-    <script src="/path/to/js/couchfriends.api-latest.js"></script>
-    // Using our CDN
     <script src="http://cdn.couchfriends.com/js/couchfriends.api-latest.js"></script>
-```
-
-# Building the Couchfriends API
-
-Download or fork the source in your webroot or project directory and run:
-
-```
-    npm install
-```
-
-To build the latest version run:
-
-```
-    grunt
 ```
 
 # API
@@ -34,7 +17,7 @@ connect you to the Couchfriends websocket server.
 
 ```javascript
     COUCHFRIENDS.settings.apiKey = '<your couchfriends.com api key>';
-    COUCHFRIENDS.settings.host = 'couchfriends.com';
+    COUCHFRIENDS.settings.host = 'ws.couchfriends.com';
     COUCHFRIENDS.settings.port = '1234';
     COUCHFRIENDS.connect();
 ```
@@ -42,7 +25,7 @@ connect you to the Couchfriends websocket server.
 ## Sending data to players/server
 
 You can use the `.send()` function to send data to the server or (one or all) of you connected clients.
-Sending data must always be an json object. Following example of hosting a new game.
+Sending data must always be an json object. This example will host a new game.
 
 ```javascript
     /**
@@ -137,5 +120,38 @@ A player's device orientation has changed.
      */
     COUCHFRIENDS.on('playerOrientation', function(data) {
         console.log('Player orientation changed. Player id: ' + data.id + ' Orientation: ' + data.x + ', ' + data.y + ', ' + data.z);
+    });
+```
+
+### on.('playerClick')
+A player's tapped/clicked on his device.
+
+```javascript
+    /**
+     * Callback when a player tapped canvas up and down
+     *
+     * @param {object} data list with the player information
+     * @param {int} data.id The unique identifier of the player
+     * @param {float} data.x Left position clicked in percentage
+     * @param {float} data.y Top position clicked in percentage
+     */
+    COUCHFRIENDS.on('playerClick', function(data) {
+        //console.log('Player clicked. Player id: ' + data.id + ' Click position: ' + data.x + ', ' + data.y);
+    });
+```
+
+### on.('playerIdentify')
+
+```javascript
+    /**
+     * Callback when a player changed its name or added additional information like selected color.
+     *
+     * @param {object} data list with the player information
+     * @param {int} data.id The unique identifier of the player
+     * @param {float} [data.name] The (new) name of the player. See http://couchfriends.com/pages/profile.html for possible
+     * names and characters that might be included in the name.
+     */
+    COUCHFRIENDS.on('playerIdentify', function(data) {
+        //console.log('Player with id: '+ data.id +' changed its name to: ' + data.name);
     });
 ```

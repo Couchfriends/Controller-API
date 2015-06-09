@@ -296,7 +296,7 @@ COUCHFRIENDS.on('playerOrientation', function(data) {
  * names and characters that might be included in the name.
  */
 COUCHFRIENDS.on('playerIdentify', function(data) {
-    //console.log('Player orientation changed. Player id: ' + data.id + ' Orientation: ' + data.x + ', ' + data.y + ', ' + data.z);
+    //console.log('Player with id: '+ data.id +' changed its name to: ' + data.name);
 });
 
 /**
