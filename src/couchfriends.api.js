@@ -1,13 +1,13 @@
 "use strict";
 /**
- * Couchfriends controller api. This file can be used in your game to enable multiplayer games and interaction with the
- * Couchfriends platform
+ * Couchfriends controller api. With the Couchfriends Controller API you can connect your phone or tablet to your HTML5
+ * game and use it as a controller. The Controller API uses Websockets to send and receive input.
  *
  * @copyright (c) 2015 Mathieu de Ruiter, Couchfriends, Fellicht & Editors
  * @author Mathieu de Ruiter / http://www.fellicht.nl/
  *
- * For detailed information about the development with the Couchfriends API please visit http://couchfriends.com
- *
+ * For detailed information about the development with the Couchfriends API please visit http://couchfriends.com.
+ * Please do not remove the header of this file.
  */
 
 /**
@@ -19,13 +19,15 @@ function Emitter(t){return t?mixin(t):void 0}function mixin(t){for(var e in Emit
 
 var COUCHFRIENDS = {
     REVISION: '3',
-    _INIT: false,
-    _socket: {}, // The Websocket object
-    _connectedPlayers: [],
-    _gameCode: '',
-    // Object with current information and state over the game
-    status: {
-        connected: false
+    _VARS: {
+        init: false,
+        socket: {}, // The Websocket object
+        connectedPlayers: [],
+        gameCode: '',
+        // Object with current information and state over the game
+        status: {
+            connected: false
+        }
     },
     /**
      * Global settings for COUCHFRIENDS api
@@ -59,13 +61,12 @@ COUCHFRIENDS.callbacks['error'] = 'error';
  * Init some javascript and styles to the game for dynamic overviews
  */
 COUCHFRIENDS.init = function () {
-    COUCHFRIENDS._INIT = true;
+    COUCHFRIENDS._VARS.init = true;
     var head  = document.getElementsByTagName('head')[0];
     var link  = document.createElement('link');
     link.rel  = 'stylesheet';
     link.type = 'text/css';
     link.href = 'http://cdn.couchfriends.com/js/couchfriends.ui.css';
-    link.href = 'http://localhost/couchfriends-controller-api/src/couchfriends.ui.css';
     link.media = 'all';
     head.appendChild(link);
     var containerDiv = document.createElement("div");
@@ -104,14 +105,14 @@ COUCHFRIENDS.showHideHowToPopup = function() {
         document.getElementById('COUCHFRIENDS-popup').style.display = 'none';
         return;
     }
-    if (COUCHFRIENDS._connectedPlayers.length > 0 || COUCHFRIENDS._gameCode == '') {
+    if (COUCHFRIENDS._VARS.connectedPlayers.length > 0 || COUCHFRIENDS._VARS.gameCode == '') {
         if (document.getElementById('COUCHFRIENDS-popup').offsetParent === null) {
             return;
         }
         document.getElementById('COUCHFRIENDS-popup').className = 'COUCHFRIENDS-fadeOut';
         return;
     }
-    var message = 'Go to <strong class="COUCHFRIENDS-underline">www.couchfriends.com</strong> with your <strong>phone</strong> or <strong>tablet</strong> and enter the code <strong id="COUCHFRIENDS-code">' + COUCHFRIENDS._gameCode +'</strong>';
+    var message = 'Go to <strong class="COUCHFRIENDS-underline">www.couchfriends.com</strong> with your <strong>phone</strong> or <strong>tablet</strong> and enter the code <strong id="COUCHFRIENDS-code">' + COUCHFRIENDS._VARS.gameCode +'</strong>';
     document.getElementById('COUCHFRIENDS-popup').innerHTML = message;
     if (document.getElementById('COUCHFRIENDS-popup').offsetParent !== null) {
         document.getElementById('COUCHFRIENDS-popup').className = 'COUCHFRIENDS-fadeIn';
@@ -126,7 +127,7 @@ COUCHFRIENDS.showHideHowToPopup = function() {
 var counter = 0;
 COUCHFRIENDS.connect = function () {
 
-    if (COUCHFRIENDS._INIT == false) {
+    if (COUCHFRIENDS._VARS.init == false) {
         COUCHFRIENDS.init();
     }
     if (typeof WebSocket == 'undefined') {
@@ -137,12 +138,12 @@ COUCHFRIENDS.connect = function () {
         COUCHFRIENDS.emit('error', 'Host or port is empty.');
         return false;
     }
-    if (COUCHFRIENDS.status.connected == true) {
+    if (COUCHFRIENDS._VARS.status.connected == true) {
         return false;
     }
-    COUCHFRIENDS._socket = new WebSocket("ws://" + COUCHFRIENDS.settings.host + ":" + COUCHFRIENDS.settings.port);
+    COUCHFRIENDS._VARS.socket = new WebSocket("ws://" + COUCHFRIENDS.settings.host + ":" + COUCHFRIENDS.settings.port);
 
-    COUCHFRIENDS._socket.onmessage = function (event) {
+    COUCHFRIENDS._VARS.socket.onmessage = function (event) {
         var data = JSON.parse(event.data);
         var callback = '';
         if (typeof data.topic == 'string') {
@@ -160,12 +161,12 @@ COUCHFRIENDS.connect = function () {
         COUCHFRIENDS.emit('_' + COUCHFRIENDS.callbacks[callback], data.data);
         COUCHFRIENDS.emit(COUCHFRIENDS.callbacks[callback], data.data);
     };
-    COUCHFRIENDS._socket.onopen = function() {
-        COUCHFRIENDS.status.connected = true;
+    COUCHFRIENDS._VARS.socket.onopen = function() {
+        COUCHFRIENDS._VARS.status.connected = true;
         COUCHFRIENDS.emit('connect');
     };
-    COUCHFRIENDS._socket.onclose = function () {
-        COUCHFRIENDS.status.connected = false;
+    COUCHFRIENDS._VARS.socket.onclose = function () {
+        COUCHFRIENDS._VARS.status.connected = false;
         COUCHFRIENDS.emit('disconnect');
     };
 
@@ -178,11 +179,11 @@ COUCHFRIENDS.connect = function () {
  */
 COUCHFRIENDS.send = function (data) {
 
-    if (COUCHFRIENDS.status.connected == false) {
+    if (COUCHFRIENDS._VARS.status.connected == false) {
         COUCHFRIENDS.emit('error', 'Message not send because game is not connected to server.');
         return false;
     }
-    COUCHFRIENDS._socket.send(JSON.stringify(data));
+    COUCHFRIENDS._VARS.socket.send(JSON.stringify(data));
 };
 
 Emitter(COUCHFRIENDS);
@@ -213,7 +214,7 @@ COUCHFRIENDS.on('disconnect', function() {
  * Callback after the connection is lost from the WebSocket server.
  */
 COUCHFRIENDS.on('_disconnect', function() {
-    COUCHFRIENDS._gameCode = '';
+    COUCHFRIENDS._VARS.gameCode = '';
 });
 
 /**
@@ -227,7 +228,7 @@ COUCHFRIENDS.on('gameStart', function(data) {
 });
 
 COUCHFRIENDS.on('_gameStart', function(data) {
-    COUCHFRIENDS._gameCode = data.code;
+    COUCHFRIENDS._VARS.gameCode = data.code;
     COUCHFRIENDS.showHideHowToPopup();
 });
 
@@ -247,7 +248,7 @@ COUCHFRIENDS.on('_playerLeft', function(data) {
         playerName = data.name;
     }
     COUCHFRIENDS.showNotification('Player "' + playerName + '" left.');
-    COUCHFRIENDS._connectedPlayers.splice(COUCHFRIENDS._connectedPlayers.indexOf(data.id), 1);
+    COUCHFRIENDS._VARS.connectedPlayers.splice(COUCHFRIENDS._VARS.connectedPlayers.indexOf(data.id), 1);
     COUCHFRIENDS.showHideHowToPopup();
 });
 
@@ -268,7 +269,7 @@ COUCHFRIENDS.on('_playerJoined', function(data) {
         playerName = data.name;
     }
     COUCHFRIENDS.showNotification('Player "' + playerName + '" joined.');
-    COUCHFRIENDS._connectedPlayers.push(data.id);
+    COUCHFRIENDS._VARS.connectedPlayers.push(data.id);
     COUCHFRIENDS.showHideHowToPopup();
 });
 
