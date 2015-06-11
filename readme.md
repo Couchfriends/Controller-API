@@ -184,6 +184,7 @@ COUCHFRIENDS.on('playerIdentify', function(data) {
 COUCHFRIENDS.on('buttonClick', function(data) {
     //console.log('Player clicked a button. Player id: ' + data.playerId + ' Button id: ' + data.id);
 });
+```
 
 ## Sending data to players/server
 
@@ -279,7 +280,7 @@ COUCHFRIENDS.send(jsonData);
  * @param topic {string} 'interface'.
  * @param action {string} 'vibrate'. Bzzz
  * @param data {object} list with parameters.
- * @param data.playerId {int} The id of the player where the button should be removed.
+ * @param data.playerId {int} The id of the player to vibrate
  * @param data.duration {int} The duration in ms. Maximum 1000ms.
  */
 var jsonData = {
