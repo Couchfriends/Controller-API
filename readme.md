@@ -36,10 +36,11 @@ COUCHFRIENDS.settings.port = '1234';
 COUCHFRIENDS.connect();
 ```
 
-## Sending data to players/server
+## Start/host a new game
 
 You can use the `.send()` function to send data to the server or (one or all) of you connected clients.
-Sending data must always be an json object. This example will host a new game.
+Sending data must always be an json object. This example will host a new game. See
+[Sending data to Players/Server](#sending-data-to-playersserver) for more examples.
 
 ```javascript
 /**
@@ -48,7 +49,7 @@ Sending data must always be an json object. This example will host a new game.
  * @param {string} topic The type of data to send. e.g. 'game'
  * @param {sting} [action] The sub type/action to send. e.g. 'host'
  * @param {object} [data] Additional data to send.
- */a
+ */
 var jsonData = {
     topic: 'game',
     action: 'host',
@@ -183,3 +184,111 @@ COUCHFRIENDS.on('playerIdentify', function(data) {
 COUCHFRIENDS.on('buttonClick', function(data) {
     //console.log('Player clicked a button. Player id: ' + data.playerId + ' Button id: ' + data.id);
 });
+
+## Sending data to players/server
+
+Use the `COUCHFRIENDS.send()` function to send data to your connected players. `send()` always required a json object
+and should at least contain `topic`, `action` and `data`.
+
+```javascript
+var dataJson {
+    topic: 'game',
+    action: 'host'
+    data: {}
+}
+```
+
+### interface.buttonAdd - Display a button
+
+Add a button on the players controller.
+
+```javascript
+/**
+ * Example of sending a button to the controller
+ * @param topic {string} 'interface'. We changing the players interface.
+ * @param action {string} 'buttonAdd'. Adding a button.
+ * @param data {object} list with additional settings and options.
+ * @param data.id {string} unique identifier of the button. This ID will be send back when the player interact with it.
+ * @param data.playerId {int} The id of the player who should see the button.
+ * @param [data.type] {string} What kind of button. 'square' or 'circle' are currently supported. Default is 'circle'.
+ * @param [data.label] {string} The label to write on the button. Default will be 'A'. Might be empty.
+ * @param [data.labelColor] {string} The color of the text of the label. Default '#ffffff'.
+ * @param [data.labelFont] {string} The style and size of the font. Default 'bold 22px Arial'.
+ * @param [data.color] {string} A hex color code for the background of the button.
+ * @param [data.size] {object} Size of the button. Either 'radius' if circle or 'width'/'height' for 'square'.
+ * @param [data.size.radius] {int} The radius size in pixels.
+ * @param [data.size.width] {int|string} The width in pixels (int) or percentages (string). e.g. '25%'.
+ * @param [data.size.height] {int|string} The height in pixels (int) or percentages (string). e.g. '25%'.
+ * @param [data.position] {object} The position of the button. Top, left, bottom and right. Int for pixels or string for
+ * percentages. e.g. left: '50%' or top: 16.
+ */
+var jsonData = {
+    topic: 'interface',
+    action: 'buttonAdd',
+    data: {
+        id: 'shootBall',
+        playerId: 1234,
+        type: 'circle',
+        label: 'Shoot!',
+        labelColor: '#ffffff',
+        labelFont: 'bold 22px Arial',
+        color: '#ff0000',
+        size: {
+            radius: 32,
+            width: 64,
+            height: 64
+        },
+        position: {
+            top: '50%',
+            left: '50%',
+            bottom: '',
+            right: ''
+        }
+    }
+};
+COUCHFRIENDS.send(jsonData);
+```
+
+### interface.buttonRemove - Removes a button
+
+```javascript
+/**
+ * Example of sending a button to the controller
+ * @param topic {string} 'interface'. We changing the players interface.
+ * @param action {string} 'buttonRemove'. Remove a button.
+ * @param data {object} list with parameters.
+ * @param data.id {string} unique identifier of the button.
+ * @param data.playerId {int} The id of the player where the button should be removed.
+ */
+var jsonData = {
+    topic: 'interface',
+    action: 'buttonRemove',
+    data: {
+        id: 'shootBall',
+        playerId: 1234
+    }
+};
+COUCHFRIENDS.send(jsonData);
+```
+
+### interface.vibrate - Vibrate controller
+
+```javascript
+/**
+ * Example of letting a phone vibrate.
+ * @param topic {string} 'interface'.
+ * @param action {string} 'vibrate'. Bzzz
+ * @param data {object} list with parameters.
+ * @param data.playerId {int} The id of the player where the button should be removed.
+ * @param data.duration {int} The duration in ms. Maximum 1000ms.
+ */
+var jsonData = {
+    topic: 'interface',
+    action: 'vibrate',
+    data: {
+        playerId: 1234,
+        duration: 200
+    }
+};
+COUCHFRIENDS.send(jsonData);
+```

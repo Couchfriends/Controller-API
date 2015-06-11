@@ -327,27 +327,3 @@ COUCHFRIENDS.on('playerClick', function(data) {
 COUCHFRIENDS.on('buttonClick', function(data) {
     //console.log('Player clicked a button. Player id: ' + data.playerId + ' Button id: ' + data.id);
 });
-
-/**
- * Example of sending a button to the controller
- * @type {{topic: string, action: string, data: {id: string, playerId: string, type: string, label: string, color: string, size: {radius: string}, position: {right: string, bottom: string}}}}
- */
-//var jsonData = {
-//    topic: 'interface',
-//    action: 'buttonAdd',
-//    data: {
-//        id: 'shootBall',
-//        playerId: this.id,
-//        type: 'circle',
-//        label: 'Shoot!',
-//        color: '#ff0000',
-//        size: {
-//            radius: '32px'
-//        },
-//        position: {
-//            right: 10',
-//            top: '50%'
-//        }
-//    }
-//};
-//COUCHFRIENDS.send(jsonData);
