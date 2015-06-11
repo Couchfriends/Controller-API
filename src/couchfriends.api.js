@@ -68,6 +68,7 @@ COUCHFRIENDS.init = function () {
     link.rel  = 'stylesheet';
     link.type = 'text/css';
     link.href = 'http://cdn.couchfriends.com/js/couchfriends.ui.css';
+    link.href = 'http://localhost/Controller-API/src/couchfriends.ui.css';
     link.media = 'all';
     head.appendChild(link);
     var containerDiv = document.createElement("div");
@@ -103,20 +104,25 @@ COUCHFRIENDS.showNotification = function (message) {
 
 COUCHFRIENDS.showHideHowToPopup = function() {
     if (COUCHFRIENDS.settings.showHowTo == false) {
-        document.getElementById('COUCHFRIENDS-popup').style.display = 'none';
+        if (COUCHFRIENDS.settings.showConnect == true) {
+            document.getElementById('COUCHFRIENDS-popup').className = 'COUCHFRIENDS-moveBottomLeft';
+        }
+        else {
+            document.getElementById('COUCHFRIENDS-popup').style.display = 'none';
+        }
         return;
     }
     if (COUCHFRIENDS._VARS.connectedPlayers.length > 0 || COUCHFRIENDS._VARS.gameCode == '') {
         if (document.getElementById('COUCHFRIENDS-popup').offsetParent === null) {
             return;
         }
-        document.getElementById('COUCHFRIENDS-popup').className = 'COUCHFRIENDS-fadeOut';
+        document.getElementById('COUCHFRIENDS-popup').className = 'COUCHFRIENDS-moveBottomLeft';
         return;
     }
     var message = 'Go to <strong class="COUCHFRIENDS-underline">www.couchfriends.com</strong> with your <strong>phone</strong> or <strong>tablet</strong> and enter the code <strong id="COUCHFRIENDS-code">' + COUCHFRIENDS._VARS.gameCode +'</strong>';
     document.getElementById('COUCHFRIENDS-popup').innerHTML = message;
     if (document.getElementById('COUCHFRIENDS-popup').offsetParent !== null) {
-        document.getElementById('COUCHFRIENDS-popup').className = 'COUCHFRIENDS-fadeIn';
+        document.getElementById('COUCHFRIENDS-popup').className = 'COUCHFRIENDS-moveCenter';
     }
 };
 

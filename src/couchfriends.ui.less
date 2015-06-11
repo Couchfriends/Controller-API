@@ -1,7 +1,14 @@
 @prefix: COUCHFRIENDS;
 @animationDuration: .5s;
+@boxShadow: 0 0 25px rgba(0,0,0,.2);
+@backgroundPopup: rgba(255,255,255,.9);
+@fontSmall: 14px;
+@paddingSmall: 5px;
+@fontLarge: 22px;
+@paddingLarge: 15px;
 #@{prefix}-overlay {
     font-family: OpenSans, "Open Sans", arial, sans-serif;
+    color: #222222;
     font-size: 16px;
     position: fixed;
     z-index: 1001;
@@ -23,8 +30,8 @@
         .@{prefix}-notification {
             position: relative;
             overflow-y: hidden;
-            color: #4E6142;
-            background-color: #81A56C;
+            background-color: @backgroundPopup;
+            box-shadow: @boxShadow;
 
             animation-name: COUCHFRIENDS-slideUp;
             -webkit-animation-name: COUCHFRIENDS-slideUp;
@@ -35,7 +42,6 @@
             -webkit-animation-timing-function: ease;
             -webkit-animation-fill-mode: both;
             animation-fill-mode: both;
-            box-shadow: 0 0 10px rgba(0,0,0,.1);
             p {
                 display: block;
                 padding: 10px;
@@ -48,22 +54,18 @@
     }
 
     #@{prefix}-popup {
-        font-size: 22px;
-        line-height: 32px;
         text-align: center;
         position: absolute;
-        min-width: 250px;
-        max-width: 40%;
-        top: 50%;
-        left: 50%;
+        width: 25%;
+        bottom: 0;
+        left: 0;
         /* bring your own prefixes */
-        transform: translate(-50%, -50%);
-        background-color: rgba(255,255,255,.9);
-        padding: 20px;
-        box-shadow: 0 0 25px rgba(0,0,0,.2);
+        //transform: translate(-50%, -50%);
+        margin-left: -12.5%;
+        background-color: @backgroundPopup;
+        box-shadow: @boxShadow;
         #COUCHFRIENDS-code {
-            font-size: 36px;
-            line-height: 46px;
+            font-size: 150%;
             display: block;
         }
     }
@@ -83,6 +85,87 @@
         -webkit-animation-fill-mode: both;
         animation-fill-mode: both;
 
+    }
+    .@{prefix}-moveBottomLeft {
+        animation-name: COUCHFRIENDS-moveBottomLeft;
+        -webkit-animation-name: COUCHFRIENDS-moveBottomLeft;
+        animation-duration: @animationDuration;
+        -webkit-animation-duration: @animationDuration;
+        -webkit-animation-fill-mode: both;
+        animation-fill-mode: both;
+    }
+    .@{prefix}-moveCenter {
+        animation-name: COUCHFRIENDS-moveCenter;
+        -webkit-animation-name: COUCHFRIENDS-moveCenter;
+        animation-duration: @animationDuration;
+        -webkit-animation-duration: @animationDuration;
+        -webkit-animation-fill-mode: both;
+        animation-fill-mode: both;
+
+    }
+}
+@keyframes COUCHFRIENDS-moveBottomLeft {
+    0% {
+        font-size: @fontLarge;
+        line-height: (@fontLarge + @paddingLarge);
+        padding: @paddingLarge;
+        bottom: 50%;
+        left: 50%;
+    }
+    100% {
+        font-size: @fontSmall;
+        line-height: (@fontSmall + @paddingSmall);
+        padding: @paddingSmall;
+        left: 13%;
+        bottom: .5%;
+    }
+}
+@-webkit-keyframes COUCHFRIENDS-moveBottomLeft {
+    0% {
+        font-size: @fontLarge;
+        line-height: (@fontLarge + @paddingLarge);
+        padding: @paddingLarge;
+        bottom: 50%;
+        left: 50%;
+    }
+    100% {
+        font-size: @fontSmall;
+        line-height: (@fontSmall + @paddingSmall);
+        padding: @paddingSmall;
+        left: 13%;
+        bottom: .5%;
+    }
+}
+@keyframes COUCHFRIENDS-moveCenter {
+    0% {
+        font-size: @fontSmall;
+        line-height: (@fontSmall + @paddingSmall);
+        padding: @paddingSmall;
+        left: 13%;
+        bottom: .5%;
+    }
+    100% {
+        font-size: @fontLarge;
+        line-height: (@fontLarge + @paddingLarge);
+        padding: @paddingLarge;
+        bottom: 50%;
+        left: 50%;
+    }
+}
+@-webkit-keyframes COUCHFRIENDS-moveCenter {
+    0% {
+        font-size: @fontSmall;
+        line-height: (@fontSmall + @paddingSmall);
+        padding: @paddingSmall;
+        left: 13%;
+        bottom: .5%;
+    }
+    100% {
+        font-size: @fontLarge;
+        line-height: (@fontLarge + @paddingLarge);
+        padding: @paddingLarge;
+        bottom: 50%;
+        left: 50%;
     }
 }
 
