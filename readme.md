@@ -1,12 +1,5 @@
 # Controller API for Couchfriends
-With the Couchfriends Controller API you can connect your phone or tablet to your HTML5 game and use it as a controller. The Controller API uses Websockets to send and receive input.
-
-## Installation
-
-Add the following code in the `<head>` of your game.
-```html
-<script src="http://cdn.couchfriends.com/js/couchfriends.api-latest.js"></script>
-```
+With the Couchfriends Controller API you can connect your phone or tablet to your HTML5 game and use it as a controller. The Controller API uses Websockets to send and receive input. See our [Wiki](https://github.com/Couchfriends/Controller-API/wiki) for the complete documentation.
 
 ## Building the Couchfriends API
 
@@ -22,7 +15,12 @@ To build the latest version run:
 grunt
 ```
 
-# API
+# Installation
+
+Add the following code in the `<head>` of your game.
+```html
+<script src="http://cdn.couchfriends.com/js/couchfriends.api-latest.js"></script>
+```
 
 ## Connect 
 
@@ -35,6 +33,9 @@ COUCHFRIENDS.settings.host = 'ws.couchfriends.com';
 COUCHFRIENDS.settings.port = '1234';
 COUCHFRIENDS.connect();
 ```
+
+
+# API
 
 ## Start/host a new game
 
