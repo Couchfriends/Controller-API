@@ -81,7 +81,10 @@ COUCHFRIENDS.init = function () {
  * Show notification and remove it after a short delay
  * @param message
  */
-COUCHFRIENDS.showNotification = function (message) {
+COUCHFRIENDS.showNotification = function (message, duration) {
+    if (duration == null) {
+        duration = 3500;
+    }
     if (COUCHFRIENDS.settings.ui.showNotifications == false) {
         return;
     }
@@ -99,7 +102,7 @@ COUCHFRIENDS.showNotification = function (message) {
                 node.parentNode.removeChild(node);
             }
         }, 1000);
-    }, 3500);
+    }, duration);
 };
 
 COUCHFRIENDS.showHideHowToPopup = function() {
@@ -261,7 +264,7 @@ COUCHFRIENDS.on('achievementUnlock', function(data) {
     //console.log('Achievement unlocked! ' + data.name);
 });
 COUCHFRIENDS.on('_achievementUnlock', function(data) {
-    COUCHFRIENDS.showNotification('<img src="'+ data.image +'" style="float: left; margin-right: 10px;" /> Achievement unlocked: <strong>' + data.name +'</strong>');
+    COUCHFRIENDS.showNotification('<img src="'+ data.image +'" style="float: left; margin-right: 10px;" /> Achievement unlocked: <strong>' + data.name +'</strong>', 5000);
 });
 
 /**
