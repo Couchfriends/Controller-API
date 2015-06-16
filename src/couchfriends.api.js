@@ -50,6 +50,7 @@ var COUCHFRIENDS = {
  */
 COUCHFRIENDS.callbacks = [];
 COUCHFRIENDS.callbacks['game.start'] = 'gameStart';
+COUCHFRIENDS.callbacks['game.achievementUnlock'] = 'achievementUnlock';
 COUCHFRIENDS.callbacks['player.left'] = 'playerLeft';
 COUCHFRIENDS.callbacks['player.join'] = 'playerJoined';
 COUCHFRIENDS.callbacks['player.orientation'] = 'playerOrientation';
@@ -255,6 +256,12 @@ COUCHFRIENDS.on('_playerLeft', function(data) {
     COUCHFRIENDS.showNotification('Player "' + playerName + '" left.');
     COUCHFRIENDS._VARS.connectedPlayers.splice(COUCHFRIENDS._VARS.connectedPlayers.indexOf(data.id), 1);
     COUCHFRIENDS.showHideHowToPopup();
+});
+COUCHFRIENDS.on('achievementUnlock', function(data) {
+    //console.log('Achievement unlocked! ' + data.name);
+});
+COUCHFRIENDS.on('_achievementUnlock', function(data) {
+    COUCHFRIENDS.showNotification('<img src="'+ data.image +'" style="float: left; margin-right: 10px;" /> Achievement unlocked: <strong>' + data.name +'</strong>');
 });
 
 /**

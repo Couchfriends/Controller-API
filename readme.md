@@ -50,11 +50,14 @@ Sending data must always be an json object. This example will host a new game. S
  * @param {string} topic The type of data to send. e.g. 'game'
  * @param {sting} [action] The sub type/action to send. e.g. 'host'
  * @param {object} [data] Additional data to send.
+ * @param {string} [data.sessionKey] The key for the game. This is needed to unlock achievements
  */
 var jsonData = {
     topic: 'game',
     action: 'host',
-    data: { }
+    data: {
+        sessionKey: 'abc'
+    }
 };
 COUCHFRIENDS.send(jsonData);
 ```
