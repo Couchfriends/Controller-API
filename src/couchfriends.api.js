@@ -55,6 +55,8 @@ COUCHFRIENDS.callbacks['player.left'] = 'playerLeft';
 COUCHFRIENDS.callbacks['player.join'] = 'playerJoined';
 COUCHFRIENDS.callbacks['player.orientation'] = 'playerOrientation';
 COUCHFRIENDS.callbacks['player.click'] = 'playerClick';
+COUCHFRIENDS.callbacks['player.clickDown'] = 'playerClickDown';
+COUCHFRIENDS.callbacks['player.clickUp'] = 'playerClickUp';
 COUCHFRIENDS.callbacks['player.buttonClick'] = 'buttonClick';
 COUCHFRIENDS.callbacks['player.identify'] = 'playerIdentify';
 COUCHFRIENDS.callbacks['error'] = 'error';
@@ -264,7 +266,7 @@ COUCHFRIENDS.on('achievementUnlock', function(data) {
     //console.log('Achievement unlocked! ' + data.name);
 });
 COUCHFRIENDS.on('_achievementUnlock', function(data) {
-    COUCHFRIENDS.showNotification('<img src="'+ data.image +'" style="float: left; margin-right: 10px;" /> Achievement unlocked: <strong>' + data.name +'</strong>', 5000);
+    COUCHFRIENDS.showNotification('<img src="'+ data.image +'" /> Achievement unlocked: <strong>' + data.name +'</strong>', 5000);
 });
 
 /**
@@ -324,6 +326,30 @@ COUCHFRIENDS.on('playerIdentify', function(data) {
  * @param {float} data.y Top position clicked in percentage
  */
 COUCHFRIENDS.on('playerClick', function(data) {
+    //console.log('Player clicked. Player id: ' + data.id + ' Click position: ' + data.x + ', ' + data.y);
+});
+
+/**
+ * Callback when a player tapped canvas up and down
+ *
+ * @param {object} data list with the player information
+ * @param {int} data.id The unique identifier of the player
+ * @param {float} data.x Left position clicked in percentage
+ * @param {float} data.y Top position clicked in percentage
+ */
+COUCHFRIENDS.on('playerClickDown', function(data) {
+    //console.log('Player clicked. Player id: ' + data.id + ' Click position: ' + data.x + ', ' + data.y);
+});
+
+/**
+ * Callback when a player tapped canvas up and down
+ *
+ * @param {object} data list with the player information
+ * @param {int} data.id The unique identifier of the player
+ * @param {float} data.x Left position clicked in percentage
+ * @param {float} data.y Top position clicked in percentage
+ */
+COUCHFRIENDS.on('playerClickUp', function(data) {
     //console.log('Player clicked. Player id: ' + data.id + ' Click position: ' + data.x + ', ' + data.y);
 });
 

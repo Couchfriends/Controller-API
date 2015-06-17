@@ -46,6 +46,17 @@
                 display: block;
                 padding: 10px;
             }
+            p:after {
+                display: block;
+                font-size: 0;
+                content: " ";
+                clear: both;
+                height: 0;
+            }
+            img {
+                float: left;
+                margin-right: 10px;
+            }
         }
         .@{prefix}-notification.@{prefix}-notification-close {
             animation-name: COUCHFRIENDS-slideDown;
@@ -171,7 +182,7 @@
 
 @keyframes COUCHFRIENDS-slideDown {
     0% {
-        max-height: 60px;
+        max-height: 150px;
     }
     100% {
         max-height: 0;
@@ -179,7 +190,7 @@
 }
 @-webkit-keyframes COUCHFRIENDS-slideDown {
     0% {
-        max-height: 60px;
+        max-height: 150px;
     }
     100% {
         max-height: 0;
@@ -190,7 +201,7 @@
         max-height: 0;
     }
     100% {
-        max-height: 60px;
+        max-height: 150px;
     }
 }
 
@@ -199,7 +210,7 @@
         max-height: 0;
     }
     100% {
-        max-height: 60px;
+        max-height: 150px;
     }
 }
 
