@@ -55,41 +55,42 @@ Emitter.prototype.on = Emitter.prototype.addEventListener = function (t, e) {
 };
 
 var COUCHFRIENDS = {
-    REVISION: '3',
-    _VARS: {
-        baseUrl: 'http://cdn.couchfriends.com/api/assets/',//document.getElementsByTagName('script')[document.getElementsByTagName('script').length-1].src,
-        init: false,
-        socket: {}, // The Websocket object
-        connectedPlayers: [],
-        gameCode: '',
-        // Object with current information and state over the game
-        status: {
-            connected: false
+        REVISION: '3',
+        _VARS: {
+            baseUrl: 'http://cdn.couchfriends.com/api/',//document.getElementsByTagName('script')[document.getElementsByTagName('script').length-1].src,
+            init: false,
+            socket: {}, // The Websocket object
+            connectedPlayers: [],
+            gameCode: '',
+            // Object with current information and state over the game
+            status: {
+                connected: false
+            },
+            sounds: {},
+            soundFiles: [
+                {
+                    play: function () {
+                    },
+                    key: 'achievement',
+                    file: 'achievement.wav'
+                }
+            ]
         },
-        sounds: {
-            achievement: {
-                play: function () {
-                },
-                key: 'achievement',
-                file: 'achievement.wav'
+        /**
+         * Global settings for COUCHFRIENDS api
+         * @type {object} settings list of settings
+         */
+        settings: {
+            apiKey: '',
+            host: '',
+            port: '',
+            ui: {
+                showNotifications: true,
+                showHowTo: true,
+                sound: true
             }
         }
-    },
-    /**
-     * Global settings for COUCHFRIENDS api
-     * @type {object} settings list of settings
-     */
-    settings: {
-        apiKey: '',
-        host: '',
-        port: '',
-        ui: {
-            showNotifications: true,
-            showHowTo: true,
-            sound: true
-        }
-    }
-};
+    };
 
 /**
  * (Temporary) Array with all possible incoming callbacks <type>.<topic> => COUCHFRIENDS.on(<result>, function(data) { });
@@ -124,7 +125,6 @@ COUCHFRIENDS.init = function () {
     containerDiv.id = 'COUCHFRIENDS-overlay';
     containerDiv.innerHTML = '<div id="COUCHFRIENDS-popup"></div><div id="COUCHFRIENDS-notifications"></div>';
     document.body.appendChild(containerDiv);
-    console.log(this._VARS.baseUrl);
     this._loadAudio();
 };
 
@@ -141,16 +141,17 @@ COUCHFRIENDS._loadAudio = function () {
         return;
     }
 
-    this._VARS.sounds.forEach(function (sound, key) {
-
+    COUCHFRIENDS._VARS.soundFiles.forEach(function (sound, index) {
+        COUCHFRIENDS._VARS.sounds[sound.key] = {};
         var request = new XMLHttpRequest();
-        request.open('GET', COUCHFRIENDS._VARS.baseUrl + '/assets/' + sound.file, true);
+        request.open('GET', COUCHFRIENDS._VARS.baseUrl + 'assets/' + sound.file, true);
         request.responseType = 'arraybuffer';
         // Decode asynchronously
+        COUCHFRIENDS._VARS.sounds[sound.key].play = function() {};
         request.onload = function () {
             try {
                 context.decodeAudioData(request.response, function (buffer) {
-                    COUCHFRIENDS._VARS.sounds[key].play = function () {
+                    COUCHFRIENDS._VARS.sounds[sound.key].play = function () {
                         if (COUCHFRIENDS.settings.ui.sound == false) {
                             return false;
                         }
