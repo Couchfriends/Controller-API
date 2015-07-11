@@ -15,11 +15,49 @@
  *
  * Copyright (c) 2014 Component contributors <dev@component.io>
  */
-function Emitter(t){return t?mixin(t):void 0}function mixin(t){for(var e in Emitter.prototype)t[e]=Emitter.prototype[e];return t}Emitter.prototype.on=Emitter.prototype.addEventListener=function(t,e){return this._callbacks=this._callbacks||{},(this._callbacks["$"+t]=this._callbacks["$"+t]||[]).push(e),this},Emitter.prototype.once=function(t,e){function i(){this.off(t,i),e.apply(this,arguments)}return i.fn=e,this.on(t,i),this},Emitter.prototype.off=Emitter.prototype.removeListener=Emitter.prototype.removeAllListeners=Emitter.prototype.removeEventListener=function(t,e){if(this._callbacks=this._callbacks||{},0==arguments.length)return this._callbacks={},this;var i=this._callbacks["$"+t];if(!i)return this;if(1==arguments.length)return delete this._callbacks["$"+t],this;for(var r,s=0;s<i.length;s++)if(r=i[s],r===e||r.fn===e){i.splice(s,1);break}return this},Emitter.prototype.emit=function(t){this._callbacks=this._callbacks||{};var e=[].slice.call(arguments,1),i=this._callbacks["$"+t];if(i){i=i.slice(0);for(var r=0,s=i.length;s>r;++r)i[r].apply(this,e)}return this},Emitter.prototype.listeners=function(t){return this._callbacks=this._callbacks||{},this._callbacks["$"+t]||[]},Emitter.prototype.hasListeners=function(t){return!!this.listeners(t).length};
+function Emitter(t) {
+    return t ? mixin(t) : void 0
+}
+function mixin(t) {
+    for (var e in Emitter.prototype)t[e] = Emitter.prototype[e];
+    return t
+}
+Emitter.prototype.on = Emitter.prototype.addEventListener = function (t, e) {
+    return this._callbacks = this._callbacks || {}, (this._callbacks["$" + t] = this._callbacks["$" + t] || []).push(e), this
+}, Emitter.prototype.once = function (t, e) {
+    function i() {
+        this.off(t, i), e.apply(this, arguments)
+    }
+
+    return i.fn = e, this.on(t, i), this
+}, Emitter.prototype.off = Emitter.prototype.removeListener = Emitter.prototype.removeAllListeners = Emitter.prototype.removeEventListener = function (t, e) {
+    if (this._callbacks = this._callbacks || {}, 0 == arguments.length)return this._callbacks = {}, this;
+    var i = this._callbacks["$" + t];
+    if (!i)return this;
+    if (1 == arguments.length)return delete this._callbacks["$" + t], this;
+    for (var r, s = 0; s < i.length; s++)if (r = i[s], r === e || r.fn === e) {
+        i.splice(s, 1);
+        break
+    }
+    return this
+}, Emitter.prototype.emit = function (t) {
+    this._callbacks = this._callbacks || {};
+    var e = [].slice.call(arguments, 1), i = this._callbacks["$" + t];
+    if (i) {
+        i = i.slice(0);
+        for (var r = 0, s = i.length; s > r; ++r)i[r].apply(this, e)
+    }
+    return this
+}, Emitter.prototype.listeners = function (t) {
+    return this._callbacks = this._callbacks || {}, this._callbacks["$" + t] || []
+}, Emitter.prototype.hasListeners = function (t) {
+    return !!this.listeners(t).length
+};
 
 var COUCHFRIENDS = {
     REVISION: '3',
     _VARS: {
+        baseUrl: 'http://cdn.couchfriends.com/api/assets/',//document.getElementsByTagName('script')[document.getElementsByTagName('script').length-1].src,
         init: false,
         socket: {}, // The Websocket object
         connectedPlayers: [],
@@ -27,6 +65,14 @@ var COUCHFRIENDS = {
         // Object with current information and state over the game
         status: {
             connected: false
+        },
+        sounds: {
+            achievement: {
+                play: function () {
+                },
+                key: 'achievement',
+                file: 'achievement.wav'
+            }
         }
     },
     /**
@@ -39,7 +85,8 @@ var COUCHFRIENDS = {
         port: '',
         ui: {
             showNotifications: true,
-            showHowTo: true
+            showHowTo: true,
+            sound: true
         }
     }
 };
@@ -66,9 +113,9 @@ COUCHFRIENDS.callbacks['error'] = 'error';
  */
 COUCHFRIENDS.init = function () {
     COUCHFRIENDS._VARS.init = true;
-    var head  = document.getElementsByTagName('head')[0];
-    var link  = document.createElement('link');
-    link.rel  = 'stylesheet';
+    var head = document.getElementsByTagName('head')[0];
+    var link = document.createElement('link');
+    link.rel = 'stylesheet';
     link.type = 'text/css';
     link.href = 'http://cdn.couchfriends.com/js/couchfriends.ui.css';
     link.media = 'all';
@@ -77,6 +124,52 @@ COUCHFRIENDS.init = function () {
     containerDiv.id = 'COUCHFRIENDS-overlay';
     containerDiv.innerHTML = '<div id="COUCHFRIENDS-popup"></div><div id="COUCHFRIENDS-notifications"></div>';
     document.body.appendChild(containerDiv);
+    console.log(this._VARS.baseUrl);
+    this._loadAudio();
+};
+
+/**
+ * Load all audio files
+ * @private
+ */
+COUCHFRIENDS._loadAudio = function () {
+    var context = false;
+    if (typeof AudioContext == 'function') {
+        context = new AudioContext();
+    }
+    if (!context) {
+        return;
+    }
+
+    this._VARS.sounds.forEach(function (sound, key) {
+
+        var request = new XMLHttpRequest();
+        request.open('GET', COUCHFRIENDS._VARS.baseUrl + '/assets/' + sound.file, true);
+        request.responseType = 'arraybuffer';
+        // Decode asynchronously
+        request.onload = function () {
+            try {
+                context.decodeAudioData(request.response, function (buffer) {
+                    COUCHFRIENDS._VARS.sounds[key].play = function () {
+                        if (COUCHFRIENDS.settings.ui.sound == false) {
+                            return false;
+                        }
+                        var source = context.createBufferSource();
+                        source.buffer = buffer;
+                        source.connect(context.destination);
+                        if (!source.start)
+                            source.start = source.noteOn;
+                        source.start(0);
+                    }
+                });
+            }
+            catch (e) {
+
+            }
+        };
+        request.send();
+
+    });
 };
 
 /**
@@ -93,12 +186,12 @@ COUCHFRIENDS.showNotification = function (message, duration) {
     var id = Date.now();
     var notificationEl = document.createElement("div");
     notificationEl.className = 'COUCHFRIENDS-notification';
-    notificationEl.id = 'COUCHFRIENDS-'+ id;
-    notificationEl.innerHTML = '<p>' + message +'</p>';
+    notificationEl.id = 'COUCHFRIENDS-' + id;
+    notificationEl.innerHTML = '<p>' + message + '</p>';
     document.getElementById('COUCHFRIENDS-notifications').appendChild(notificationEl);
-    setTimeout(function() {
+    setTimeout(function () {
         document.getElementById('COUCHFRIENDS-' + id).className = "COUCHFRIENDS-notification COUCHFRIENDS-notification-close";
-        setTimeout(function() {
+        setTimeout(function () {
             var node = document.getElementById('COUCHFRIENDS-' + id);
             if (node.parentNode) {
                 node.parentNode.removeChild(node);
@@ -107,7 +200,7 @@ COUCHFRIENDS.showNotification = function (message, duration) {
     }, duration);
 };
 
-COUCHFRIENDS.showHideHowToPopup = function() {
+COUCHFRIENDS.showHideHowToPopup = function () {
     if (COUCHFRIENDS.settings.showHowTo == false) {
         if (COUCHFRIENDS.settings.showConnect == true) {
             document.getElementById('COUCHFRIENDS-popup').className = 'COUCHFRIENDS-moveBottomLeft';
@@ -124,7 +217,7 @@ COUCHFRIENDS.showHideHowToPopup = function() {
         document.getElementById('COUCHFRIENDS-popup').className = 'COUCHFRIENDS-moveBottomLeft';
         return;
     }
-    var message = 'Go to <strong class="COUCHFRIENDS-underline">www.couchfriends.com</strong> with your <strong>phone</strong> or <strong>tablet</strong> and enter the code <strong id="COUCHFRIENDS-code">' + COUCHFRIENDS._VARS.gameCode +'</strong>';
+    var message = 'Go to <strong class="COUCHFRIENDS-underline">www.couchfriends.com</strong> with your <strong>phone</strong> or <strong>tablet</strong> and enter the code <strong id="COUCHFRIENDS-code">' + COUCHFRIENDS._VARS.gameCode + '</strong>';
     document.getElementById('COUCHFRIENDS-popup').innerHTML = message;
     if (document.getElementById('COUCHFRIENDS-popup').offsetParent !== null) {
         document.getElementById('COUCHFRIENDS-popup').className = 'COUCHFRIENDS-moveCenter';
@@ -172,7 +265,7 @@ COUCHFRIENDS.connect = function () {
         COUCHFRIENDS.emit('_' + COUCHFRIENDS.callbacks[callback], data.data);
         COUCHFRIENDS.emit(COUCHFRIENDS.callbacks[callback], data.data);
     };
-    COUCHFRIENDS._VARS.socket.onopen = function() {
+    COUCHFRIENDS._VARS.socket.onopen = function () {
         COUCHFRIENDS._VARS.status.connected = true;
         COUCHFRIENDS.emit('connect');
     };
@@ -205,26 +298,26 @@ Emitter(COUCHFRIENDS);
  * @param {object} data list with error details.
  * @param {string} data.message the error
  */
-COUCHFRIENDS.on('error', function(data) {
+COUCHFRIENDS.on('error', function (data) {
 });
 
 /**
  * Callback after connection to the WebSocket server is successful. Best practise will be hosting a new game after
  * a successful connection.
  */
-COUCHFRIENDS.on('connect', function() {
+COUCHFRIENDS.on('connect', function () {
 });
 
 /**
  * Callback after the connection is lost from the WebSocket server.
  */
-COUCHFRIENDS.on('disconnect', function() {
+COUCHFRIENDS.on('disconnect', function () {
 });
 
 /**
  * Callback after the connection is lost from the WebSocket server.
  */
-COUCHFRIENDS.on('_disconnect', function() {
+COUCHFRIENDS.on('_disconnect', function () {
     COUCHFRIENDS._VARS.gameCode = '';
 });
 
@@ -234,11 +327,11 @@ COUCHFRIENDS.on('_disconnect', function() {
  * @param {object} data List with game data
  * @param {string} data.code The game code players need to fill to join this game
  */
-COUCHFRIENDS.on('gameStart', function(data) {
+COUCHFRIENDS.on('gameStart', function (data) {
     //console.log('Game started with code: '+ data.code);
 });
 
-COUCHFRIENDS.on('_gameStart', function(data) {
+COUCHFRIENDS.on('_gameStart', function (data) {
     COUCHFRIENDS._VARS.gameCode = data.code;
     COUCHFRIENDS.showHideHowToPopup();
 });
@@ -249,10 +342,10 @@ COUCHFRIENDS.on('_gameStart', function(data) {
  * @param {object} data list with the player information
  * @param {int} data.id the unique identifier of the player that left
  */
-COUCHFRIENDS.on('playerLeft', function(data) {
+COUCHFRIENDS.on('playerLeft', function (data) {
     //console.log('Player left. Player id: ' + data.id);
 });
-COUCHFRIENDS.on('_playerLeft', function(data) {
+COUCHFRIENDS.on('_playerLeft', function (data) {
     //console.log('Player joined. Player id: ' + data.id);
     var playerName = data.id;
     if (data.name != null) {
@@ -262,11 +355,12 @@ COUCHFRIENDS.on('_playerLeft', function(data) {
     COUCHFRIENDS._VARS.connectedPlayers.splice(COUCHFRIENDS._VARS.connectedPlayers.indexOf(data.id), 1);
     COUCHFRIENDS.showHideHowToPopup();
 });
-COUCHFRIENDS.on('achievementUnlock', function(data) {
+COUCHFRIENDS.on('achievementUnlock', function (data) {
     //console.log('Achievement unlocked! ' + data.name);
 });
-COUCHFRIENDS.on('_achievementUnlock', function(data) {
-    COUCHFRIENDS.showNotification('<img src="'+ data.image +'" /> Achievement unlocked: <strong>' + data.name +'</strong>', 5000);
+COUCHFRIENDS.on('_achievementUnlock', function (data) {
+    COUCHFRIENDS._VARS.sounds.achievement.play();
+    COUCHFRIENDS.showNotification('<img src="' + data.image + '" /> Achievement unlocked: <strong>' + data.name + '</strong>', 5000);
 });
 
 /**
@@ -276,10 +370,10 @@ COUCHFRIENDS.on('_achievementUnlock', function(data) {
  * @param {int} data.id The unique identifier of the player
  * @param {string} [data.name] The name of the player
  */
-COUCHFRIENDS.on('playerJoined', function(data) {
+COUCHFRIENDS.on('playerJoined', function (data) {
     //console.log('Player joined. Player id: ' + data.id);
 });
-COUCHFRIENDS.on('_playerJoined', function(data) {
+COUCHFRIENDS.on('_playerJoined', function (data) {
     //console.log('Player joined. Player id: ' + data.id);
     var playerName = data.id;
     if (data.name != null) {
@@ -301,7 +395,7 @@ COUCHFRIENDS.on('_playerJoined', function(data) {
  * @param {float} [data.y] The y-as orientation (-1 to 1). E.g. 0.12
  * @param {float} [data.z] The z-as orientation (-1 to 1). E.g. -0.301
  */
-COUCHFRIENDS.on('playerOrientation', function(data) {
+COUCHFRIENDS.on('playerOrientation', function (data) {
     //console.log('Player orientation changed. Player id: ' + data.id + ' Orientation: ' + data.x + ', ' + data.y + ', ' + data.z);
 });
 
@@ -313,7 +407,7 @@ COUCHFRIENDS.on('playerOrientation', function(data) {
  * @param {float} [data.name] The (new) name of the player. See http://couchfriends.com/pages/profile.html for possible
  * names and characters that might be included in the name.
  */
-COUCHFRIENDS.on('playerIdentify', function(data) {
+COUCHFRIENDS.on('playerIdentify', function (data) {
     //console.log('Player with id: '+ data.id +' changed its name to: ' + data.name);
 });
 
@@ -325,7 +419,7 @@ COUCHFRIENDS.on('playerIdentify', function(data) {
  * @param {float} data.x Left position clicked in percentage
  * @param {float} data.y Top position clicked in percentage
  */
-COUCHFRIENDS.on('playerClick', function(data) {
+COUCHFRIENDS.on('playerClick', function (data) {
     //console.log('Player clicked. Player id: ' + data.id + ' Click position: ' + data.x + ', ' + data.y);
 });
 
@@ -337,7 +431,7 @@ COUCHFRIENDS.on('playerClick', function(data) {
  * @param {float} data.x Left position clicked in percentage
  * @param {float} data.y Top position clicked in percentage
  */
-COUCHFRIENDS.on('playerClickDown', function(data) {
+COUCHFRIENDS.on('playerClickDown', function (data) {
     //console.log('Player clicked. Player id: ' + data.id + ' Click position: ' + data.x + ', ' + data.y);
 });
 
@@ -349,7 +443,7 @@ COUCHFRIENDS.on('playerClickDown', function(data) {
  * @param {float} data.x Left position clicked in percentage
  * @param {float} data.y Top position clicked in percentage
  */
-COUCHFRIENDS.on('playerClickUp', function(data) {
+COUCHFRIENDS.on('playerClickUp', function (data) {
     //console.log('Player clicked. Player id: ' + data.id + ' Click position: ' + data.x + ', ' + data.y);
 });
 
@@ -360,6 +454,6 @@ COUCHFRIENDS.on('playerClickUp', function(data) {
  * @param {int} data.id The unique identifier of the button
  * @param {int} data.playerId The unique identifier of the player
  */
-COUCHFRIENDS.on('buttonClick', function(data) {
+COUCHFRIENDS.on('buttonClick', function (data) {
     //console.log('Player clicked a button. Player id: ' + data.playerId + ' Button id: ' + data.id);
 });

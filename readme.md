@@ -19,7 +19,7 @@ grunt
 
 Add the following code in the `<head>` of your game.
 ```html
-<script src="http://cdn.couchfriends.com/js/couchfriends.api-latest.js"></script>
+<script src="http://cdn.couchfriends.com/api/couchfriends.api-latest.js"></script>
 ```
 
 ## Connect 

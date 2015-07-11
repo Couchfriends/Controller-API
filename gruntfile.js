@@ -24,6 +24,15 @@ module.exports = function(grunt) {
                     "build/couchfriends.ui.css": "src/couchfriends.ui.less"
                 }
             }
+        },
+        copy: {
+            main: {
+                src: 'src/assets/*',
+                dest: 'build/assets/',
+                flatten: true,
+                expand: true,
+                filter: 'isFile'
+            }
         }
     });
 
@@ -31,8 +40,10 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-uglify');
 
     // Default task(s).
-    grunt.registerTask('default', ['uglify', 'less']);
+    grunt.registerTask('default', ['uglify', 'less', 'copy']);
 
     grunt.loadNpmTasks('grunt-contrib-less');
+
+    grunt.loadNpmTasks('grunt-contrib-copy');
 
 };
