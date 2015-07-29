@@ -82,8 +82,8 @@ var COUCHFRIENDS = {
          */
         settings: {
             apiKey: '',
-            host: '',
-            port: '',
+            host: 'ws.couchfriends.com',
+            port: '80',
             ui: {
                 showNotifications: true,
                 showHowTo: true,
