@@ -118,7 +118,7 @@ COUCHFRIENDS.init = function () {
     var link = document.createElement('link');
     link.rel = 'stylesheet';
     link.type = 'text/css';
-    link.href = 'http://cdn.couchfriends.com/js/couchfriends.ui.css';
+    link.href = 'http://cdn.couchfriends.com/api/couchfriends.ui.css';
     link.media = 'all';
     head.appendChild(link);
     var containerDiv = document.createElement("div");
