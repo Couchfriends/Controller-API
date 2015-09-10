@@ -218,7 +218,7 @@ COUCHFRIENDS.showHideHowToPopup = function () {
         document.getElementById('COUCHFRIENDS-popup').className = 'COUCHFRIENDS-moveBottomLeft';
         return;
     }
-    var message = 'Go to <strong class="COUCHFRIENDS-underline">www.couchfriends.com</strong> with your <strong>phone</strong> or <strong>tablet</strong> and enter the code <strong id="COUCHFRIENDS-code">' + COUCHFRIENDS._VARS.gameCode + '</strong>';
+    var message = '<img style="position:relative;top:4px;margin-right:5px;" src="'+ COUCHFRIENDS._VARS.baseUrl + 'assets/controller-mode.png" /> Go to <strong class="COUCHFRIENDS-underline">www.couchfriends.com</strong> with your <strong>phone</strong> or <strong>tablet</strong> and enter the code <strong id="COUCHFRIENDS-code">' + COUCHFRIENDS._VARS.gameCode + '</strong>';
     document.getElementById('COUCHFRIENDS-popup').innerHTML = message;
     if (document.getElementById('COUCHFRIENDS-popup').offsetParent !== null) {
         document.getElementById('COUCHFRIENDS-popup').className = 'COUCHFRIENDS-moveCenter';
