@@ -1,6 +1,8 @@
 # Controller API for Couchfriends
 With the Couchfriends Controller API you can connect your phone or tablet to your HTML5 game and use it as a controller. The Controller API uses Websockets to send and receive input. See our [Wiki](https://github.com/Couchfriends/Controller-API/wiki) for the complete documentation.
 
+![Controller on Phone](http://couchfriends.com/img/pages/convert-smart-phone-to-gamepad-controller.png)
+
 ## Building the Couchfriends API
 
 Download or fork the source in your webroot or project directory and run:
