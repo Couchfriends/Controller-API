@@ -30,9 +30,7 @@ Couchfriends api uses the global `window.COUCHFRIENDS` or `COUCHFRIENDS` object 
 connect you to the Couchfriends websocket server.
 
 ```javascript
-COUCHFRIENDS.settings.apiKey = '<your couchfriends.com api key>';
-COUCHFRIENDS.settings.host = 'ws.couchfriends.com';
-COUCHFRIENDS.settings.port = '80';
+COUCHFRIENDS.settings.apiKey = '<your couchfriends.com api key>'; // Not needed for testing purposes
 COUCHFRIENDS.connect();
 ```
 
