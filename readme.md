@@ -37,7 +37,7 @@ COUCHFRIENDS.connect();
 
 # API
 
-## Start/host a new game
+### Start/host a new game
 
 You can use the `.send()` function to send data to the server or (one or all) of you connected clients.
 Sending data must always be an json object. This example will host a new game. See
@@ -57,6 +57,22 @@ var jsonData = {
     action: 'host',
     data: {
         sessionKey: 'abc'
+    }
+};
+COUCHFRIENDS.send(jsonData);
+```
+
+### Example: Add default controller buttons A, B, X and Y
+
+Use the following code after a player connected and it will automatically add the default A-B-X and Y buttons to the gamepad.
+
+```javascript
+var jsonData = {
+    topic: 'interface',
+    action: 'buttonAdd',
+    data: {
+        id: 'a-b-x-y',
+        playerId: 1234 // The id of the connected player. See 'playerJoined' callback.
     }
 };
 COUCHFRIENDS.send(jsonData);
