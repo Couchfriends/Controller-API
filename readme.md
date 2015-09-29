@@ -66,6 +66,8 @@ COUCHFRIENDS.send(jsonData);
 
 Use the following code after a player connected and it will automatically add the default A-B-X and Y buttons to the gamepad.
 
+![Gamepad on phone](http://couchfriends.com/img/pages/gamepad-a-b-x-y-buttons-phone.jpg)
+
 ```javascript
 var jsonData = {
     topic: 'interface',
