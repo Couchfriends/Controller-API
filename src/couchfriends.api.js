@@ -106,6 +106,8 @@ COUCHFRIENDS.callbacks['player.click'] = 'playerClick';
 COUCHFRIENDS.callbacks['player.clickDown'] = 'playerClickDown';
 COUCHFRIENDS.callbacks['player.clickUp'] = 'playerClickUp';
 COUCHFRIENDS.callbacks['player.buttonClick'] = 'buttonClick';
+COUCHFRIENDS.callbacks['player.buttonDown'] = 'buttonDown';
+COUCHFRIENDS.callbacks['player.buttonUp'] = 'buttonUp';
 COUCHFRIENDS.callbacks['player.identify'] = 'playerIdentify';
 COUCHFRIENDS.callbacks['error'] = 'error';
 
@@ -456,5 +458,27 @@ COUCHFRIENDS.on('playerClickUp', function (data) {
  * @param {int} data.playerId The unique identifier of the player
  */
 COUCHFRIENDS.on('buttonClick', function (data) {
+    //console.log('Player clicked a button. Player id: ' + data.playerId + ' Button id: ' + data.id);
+});
+
+/**
+ * Callback when a player tapped a button
+ *
+ * @param {object} data list with the player and button information
+ * @param {int} data.id The unique identifier of the button
+ * @param {int} data.playerId The unique identifier of the player
+ */
+COUCHFRIENDS.on('buttonDown', function (data) {
+    //console.log('Player clicked a button. Player id: ' + data.playerId + ' Button id: ' + data.id);
+});
+
+/**
+ * Callback when a player tapped a button
+ *
+ * @param {object} data list with the player and button information
+ * @param {int} data.id The unique identifier of the button
+ * @param {int} data.playerId The unique identifier of the player
+ */
+COUCHFRIENDS.on('buttonUp', function (data) {
     //console.log('Player clicked a button. Player id: ' + data.playerId + ' Button id: ' + data.id);
 });
