@@ -248,7 +248,7 @@ COUCHFRIENDS.connect = function () {
     if (COUCHFRIENDS._VARS.status.connected == true) {
         return false;
     }
-    COUCHFRIENDS._VARS.socket = new WebSocket("ws://" + COUCHFRIENDS.settings.host + ":" + COUCHFRIENDS.settings.port);
+    COUCHFRIENDS._VARS.socket = new WebSocket("wss://" + COUCHFRIENDS.settings.host + ":" + COUCHFRIENDS.settings.port);
 
     COUCHFRIENDS._VARS.socket.onmessage = function (event) {
         var data = JSON.parse(event.data);
