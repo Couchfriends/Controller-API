@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="Emitter.js"></script>
+    <script src="peer.js"></script>
+    <script src="couchfriends.api.js"></script>
+</head>
+<body>
+<a href="#top" onclick="COUCHFRIENDS.showNotification('hello', 1000);">Show notification hello, 1000ms</a><br />
+<a href="#top" onclick="COUCHFRIENDS.showHideHowToPopup();">show hidehowto</a><br />
+<a href="#top" onclick="COUCHFRIENDS.emit('achievementUnlock', {name:'Achievement'});">Unlock achievement</a><br />
+</body>
+</html>

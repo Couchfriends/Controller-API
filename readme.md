@@ -26,13 +26,7 @@ Add the following code in the `<head>` of your game.
 
 ## Connect 
 
-Couchfriends api uses the global `window.COUCHFRIENDS` or `COUCHFRIENDS` object variable. The following code will
-connect you to the Couchfriends websocket server.
-
-```javascript
-COUCHFRIENDS.connect();
-```
-
+Couchfriends api uses the global `window.COUCHFRIENDS` or `COUCHFRIENDS` object variable. The API will automaticly connect to the websocket server.
 
 # API
 
@@ -41,21 +35,6 @@ COUCHFRIENDS.connect();
 You can use the `.send()` function to send data to the server or (one or all) of you connected clients.
 Sending data must always be an json object. This example will host a new game. See
 [Sending data to Players/Server](#sending-data-to-playersserver) for more examples.
-
-```javascript
-/**
- * Request a new game host.
- *
- * @param {string} topic The type of data to send. e.g. 'game'
- * @param {sting} [action] The sub type/action to send. e.g. 'host'
- * @param {object} [data] Additional data to send.
- */
-var jsonData = {
-    topic: 'game',
-    action: 'host'
-};
-COUCHFRIENDS.send(jsonData);
-```
 
 ## Callbacks
 
@@ -66,14 +45,13 @@ Each data that is received from the server is passed through the `.on('type', fu
 Called after a successful connection to the Websocket server.
 
 ```javascript
-COUCHFRIENDS.on('connect', function() {
-    console.log('Ready for action!');
-    // Best place to host a game:
-    var jsonData = {
-        topic: 'game',
-        action: 'host'
-    };
-    COUCHFRIENDS.send(jsonData);
+/**
+* Callback after connected to the websocket server and ready for incoming
+* players.
+* @param string code a unique identifier for players to join this game.
+*/
+COUCHFRIENDS.on('connect', function(code) {
+    console.log('Ready for action! My gamecode is: ' + code);
 });
 ```
 
@@ -88,7 +66,7 @@ A new player joined the game.
  * @param {int} data.id The unique identifier of the player
  * @param {string} [data.name] The name of the player
  */
-COUCHFRIENDS.on('playerJoined', function(data) {
+COUCHFRIENDS.on('player.join', function(data) {
     console.log('Player joined. Player id: ' + data.id);
 });
 ```
@@ -103,7 +81,7 @@ One of the players disconnected or left the game.
  * @param {object} data list with the player information
  * @param {int} data.id the unique identifier of the player that left
  */
-COUCHFRIENDS.on('playerLeft', function(data) {
+COUCHFRIENDS.on('player.left', function(data) {
     console.log('Player left. Player id: ' + data.id);
 });
 ```
@@ -118,7 +96,7 @@ Player pressed or tapped a button.
  * @param {object} data list with the player information
  * @param {int} data.id the unique identifier of the button. e.g. 'a'
  */
-COUCHFRIENDS.on('buttonUp', function(data) {
+COUCHFRIENDS.on('player.buttonUp', function(data) {
     console.log('Player pressed button. Player id: ' + data.playerId + ' Button: ' + data.id);
 });
 ```
@@ -137,7 +115,7 @@ A player's device orientation has changed.
  * @param {float} [data.x] The x-as orientation (-1 to 1). E.g. -0.871
  * @param {float} [data.y] The y-as orientation (-1 to 1). E.g. 0.12
  */
-COUCHFRIENDS.on('playerOrientation', function(data) {
+COUCHFRIENDS.on('player.orientation', function(data) {
     console.log('Player orientation changed. Player id: ' + data.id + ' Orientation: ' + data.x + ', ' + data.y);
 });
 ```

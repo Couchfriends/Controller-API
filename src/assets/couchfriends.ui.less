@@ -1,0 +1,260 @@
+@prefix: COUCHFRIENDS;
+@animationDuration: .5s;
+@boxShadow: 0 0 25px rgba(0,0,0,.2);
+@backgroundPopup: rgba(255,255,255,.9);
+@warning: rgba(255,0,0,.5);
+@bonus: rgba(88, 255, 0, 0.5);
+@fontSmall: 14px;
+@paddingSmall: 5px;
+@fontLarge: 22px;
+@paddingLarge: 15px;
+#@{prefix}-overlay {
+    pointer-events: none;
+    font-family: OpenSans, "Open Sans", arial, sans-serif;
+    color: #222222;
+    font-size: 16px;
+    position: fixed;
+    z-index: 1001;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+
+    .@{prefix}-underline {
+        text-decoration: underline;
+    }
+
+    #@{prefix}-notifications {
+        position: absolute;
+        width: 200px;
+        height: auto;
+        right: 10px;
+        bottom: 10px;
+        .@{prefix}-notification {
+            position: relative;
+            overflow-y: hidden;
+            background-color: @backgroundPopup;
+            box-shadow: @boxShadow;
+
+            animation-name: COUCHFRIENDS-slideUp;
+            -webkit-animation-name: COUCHFRIENDS-slideUp;
+            margin-top: 10px;
+            animation-duration: @animationDuration;
+            -webkit-animation-duration: @animationDuration;
+            animation-timing-function: ease;
+            -webkit-animation-timing-function: ease;
+            -webkit-animation-fill-mode: both;
+            animation-fill-mode: both;
+            p {
+                display: block;
+                padding: 10px;
+            }
+            p:after {
+                display: block;
+                font-size: 0;
+                content: " ";
+                clear: both;
+                height: 0;
+            }
+            img {
+                float: left;
+                margin-right: 10px;
+                max-width: 64px;
+                max-height: 64px;
+            }
+        }
+        .@{prefix}-notification-error {
+            background-color: @warning;
+        }
+        .@{prefix}-notification-achievement {
+            background-color: @bonus;
+        }
+        .@{prefix}-notification.@{prefix}-notification-close {
+            animation-name: COUCHFRIENDS-slideDown;
+            -webkit-animation-name: COUCHFRIENDS-slideDown;
+        }
+    }
+
+    #@{prefix}-popup {
+        text-align: center;
+        position: absolute;
+        width: 25%;
+        bottom: 0;
+        left: 0;
+        /* bring your own prefixes */
+        //transform: translate(-50%, -50%);
+        margin-left: -12.5%;
+        background-color: @backgroundPopup;
+        box-shadow: @boxShadow;
+        #COUCHFRIENDS-code {
+            font-size: 150%;
+            display: block;
+        }
+    }
+    .@{prefix}-fadeIn {
+        animation-name: COUCHFRIENDS-fadeIn;
+        -webkit-animation-name: COUCHFRIENDS-fadeIn;
+        animation-duration: @animationDuration;
+        -webkit-animation-duration: @animationDuration;
+        -webkit-animation-fill-mode: both;
+        animation-fill-mode: both;
+    }
+    .@{prefix}-fadeOut {
+        animation-name: COUCHFRIENDS-fadeOut;
+        -webkit-animation-name: COUCHFRIENDS-fadeOut;
+        animation-duration: @animationDuration;
+        -webkit-animation-duration: @animationDuration;
+        -webkit-animation-fill-mode: both;
+        animation-fill-mode: both;
+
+    }
+    .@{prefix}-moveBottomLeft {
+        animation-name: COUCHFRIENDS-moveBottomLeft;
+        -webkit-animation-name: COUCHFRIENDS-moveBottomLeft;
+        animation-duration: @animationDuration;
+        -webkit-animation-duration: @animationDuration;
+        -webkit-animation-fill-mode: both;
+        animation-fill-mode: both;
+    }
+    .@{prefix}-moveCenter {
+        animation-name: COUCHFRIENDS-moveCenter;
+        -webkit-animation-name: COUCHFRIENDS-moveCenter;
+        animation-duration: @animationDuration;
+        -webkit-animation-duration: @animationDuration;
+        -webkit-animation-fill-mode: both;
+        animation-fill-mode: both;
+
+    }
+}
+@keyframes COUCHFRIENDS-moveBottomLeft {
+    0% {
+        font-size: @fontLarge;
+        line-height: (@fontLarge + @paddingLarge);
+        padding: @paddingLarge;
+        bottom: 50%;
+        left: 50%;
+    }
+    100% {
+        font-size: @fontSmall;
+        line-height: (@fontSmall + @paddingSmall);
+        padding: @paddingSmall;
+        left: 13%;
+        bottom: .5%;
+    }
+}
+@-webkit-keyframes COUCHFRIENDS-moveBottomLeft {
+    0% {
+        font-size: @fontLarge;
+        line-height: (@fontLarge + @paddingLarge);
+        padding: @paddingLarge;
+        bottom: 50%;
+        left: 50%;
+    }
+    100% {
+        font-size: @fontSmall;
+        line-height: (@fontSmall + @paddingSmall);
+        padding: @paddingSmall;
+        left: 13%;
+        bottom: .5%;
+    }
+}
+@keyframes COUCHFRIENDS-moveCenter {
+    0% {
+        font-size: @fontSmall;
+        line-height: (@fontSmall + @paddingSmall);
+        padding: @paddingSmall;
+        left: 13%;
+        bottom: .5%;
+    }
+    100% {
+        font-size: @fontLarge;
+        line-height: (@fontLarge + @paddingLarge);
+        padding: @paddingLarge;
+        bottom: 50%;
+        left: 50%;
+    }
+}
+@-webkit-keyframes COUCHFRIENDS-moveCenter {
+    0% {
+        font-size: @fontSmall;
+        line-height: (@fontSmall + @paddingSmall);
+        padding: @paddingSmall;
+        left: 13%;
+        bottom: .5%;
+    }
+    100% {
+        font-size: @fontLarge;
+        line-height: (@fontLarge + @paddingLarge);
+        padding: @paddingLarge;
+        bottom: 50%;
+        left: 50%;
+    }
+}
+
+@keyframes COUCHFRIENDS-slideDown {
+    0% {
+        max-height: 150px;
+    }
+    100% {
+        max-height: 0;
+    }
+}
+@-webkit-keyframes COUCHFRIENDS-slideDown {
+    0% {
+        max-height: 150px;
+    }
+    100% {
+        max-height: 0;
+    }
+}
+@keyframes COUCHFRIENDS-slideUp {
+    0% {
+        max-height: 0;
+    }
+    100% {
+        max-height: 150px;
+    }
+}
+
+@-webkit-keyframes COUCHFRIENDS-slideUp {
+    0% {
+        max-height: 0;
+    }
+    100% {
+        max-height: 150px;
+    }
+}
+
+@keyframes COUCHFRIENDS-fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+@-webkit-keyframes COUCHFRIENDS-fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+@keyframes COUCHFRIENDS-fadeOut {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+@-webkit-keyframes COUCHFRIENDS-fadeOut {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
