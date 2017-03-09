@@ -71,6 +71,17 @@ COUCHFRIENDS.on('player.join', function(data) {
 });
 ```
 
+```javascript
+/**
+* Player idenfifier (color).
+*/
+COUCHFRIENDS.on('player.identify', function (data) {
+    var color = data.color;
+    var playerId = data.player.id;
+    // Make the player the color of the controllers layout
+});
+```
+
 ### on.('playerLeft')
 One of the players disconnected or left the game.
 
@@ -116,7 +127,7 @@ A player's device orientation has changed.
  * @param {float} [data.y] The y-as orientation (-1 to 1). E.g. 0.12
  */
 COUCHFRIENDS.on('player.orientation', function(data) {
-    console.log('Player orientation changed. Player id: ' + data.id + ' Orientation: ' + data.x + ', ' + data.y);
+    console.log('Player orientation changed. Player id: ' + data.player.id + ' Orientation: ' + data.x + ', ' + data.y);
 });
 ```
 
