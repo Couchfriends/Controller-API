@@ -309,7 +309,15 @@ COUCHFRIENDS.connect = function () {
  * @param data Object object with data to send. See Api references for all available options.
  */
 COUCHFRIENDS.send = function (data) {
-    COUCHFRIENDS._socket.send(data);
+    if (data.id == null) {
+        console.warn(data);
+    }
+    for (var i = 0; i < this.players.length; i++) {
+        if (data.id == this.players[i].id) {
+            this.players[i].conn.send(data);
+            break;
+        }
+    }
 };
 
 Emitter(COUCHFRIENDS);
@@ -363,7 +371,8 @@ COUCHFRIENDS.on('player.join', function (conn) {
             data: {
                 color: this.player.color
             }
-        })
+        });
+        COUCHFRIENDS.emit('player.identify', {color: this.player.color, player: {id: this.player.id}});
     });
     conn.on('close', function () {
         COUCHFRIENDS.emit('player.left', {
