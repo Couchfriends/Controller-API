@@ -37,18 +37,14 @@ var COUCHFRIENDS = {
     /**
      * All connected players with their id, connection object, name
      */
+    playerIndex: 1,
     players: [],
-    /**
-     * The game code to join this game.
-     */
-    _code: '',
     socket: {}, // The Websocket object
-    gameCode: '',
+    _code: '',
     // Object with current information and state over the game
     status: {
         connected: false
-    }
-    ,
+    },
     /**
      * Global settings for COUCHFRIENDS api
      * @type {object} settings list of settings
@@ -87,18 +83,6 @@ var COUCHFRIENDS = {
             '#ffcf8b',
             '#a983ff'
         ],
-        /**
-         * Enable SSL?
-         */
-        secure: true,
-        /**
-         * Websocket server
-         */
-        host: 'ws.couchfriends.com',
-        /**
-         * Websocket port
-         */
-        port: 80,
         /**
          * UI Settings
          */
@@ -274,22 +258,10 @@ COUCHFRIENDS._generateCode = function (len) {
  */
 COUCHFRIENDS.connect = function () {
 
-    if (typeof WebSocket == 'undefined') {
-        COUCHFRIENDS.emit('error', 'Websockets are not supported by device.');
-        return false;
-    }
-    if (COUCHFRIENDS.settings.host == '' || COUCHFRIENDS.settings.port == '') {
-        COUCHFRIENDS.emit('error', 'Host or port is empty.');
-        return false;
-    }
-    if (COUCHFRIENDS._socket != null && COUCHFRIENDS._socket.open == true) {
-        return false;
-    }
-    var code = COUCHFRIENDS._generateCode();
+    var id = 'lwjd5qra8257b9';
+    var code = COUCHFRIENDS._generateCode(3);
     var peer = new Peer(code, {
-        host: COUCHFRIENDS.settings.host,
-        port: COUCHFRIENDS.settings.port,
-        secure: COUCHFRIENDS.settings.secure
+        key: id
     });
     peer.on('open', function (code) {
         COUCHFRIENDS.emit('connect', code);
@@ -297,8 +269,12 @@ COUCHFRIENDS.connect = function () {
     peer.on('close', function () {
         COUCHFRIENDS.emit('disconnect');
     });
+    peer.on('error', function (error) {
+        console.log(error);
+    });
     peer.on('connection', function (conn) {
-        COUCHFRIENDS.emit('player.join', conn);
+        console.log('connection');
+        COUCHFRIENDS.emit('player.connected', conn);
     });
     COUCHFRIENDS._socket = peer;
 };
@@ -339,8 +315,8 @@ COUCHFRIENDS.on('error', function (data) {
  * a successful connection.
  * @param string code. The code players can use to join.
  */
-COUCHFRIENDS.on('connect', function (code) {
-    COUCHFRIENDS._code = code;
+COUCHFRIENDS.on('connect', function (key) {
+    COUCHFRIENDS._code = key;
     COUCHFRIENDS.showHideHowToPopup();
 });
 
@@ -358,53 +334,72 @@ COUCHFRIENDS.on('disconnect', function () {
  *
  * @param conn the peer connection to the player.
  */
-COUCHFRIENDS.on('player.join', function (conn) {
+COUCHFRIENDS.on('player.connected', function (conn) {
+    COUCHFRIENDS.playerIndex++;
+    var playerId = COUCHFRIENDS.playerIndex;
     var player = {
-        id: conn.peer,
+        id: playerId,
+        peer: playerId, // fallback
         conn: conn,
         color: COUCHFRIENDS._generateColor()
     };
     conn.player = player;
     conn.on('open', function () {
-        this.send({
+
+        /**
+         * Receiving data from one of the players.
+         * @param data object from the controller
+         * @param data.topic string The action of the player
+         * player.orientation
+         * player.click
+         * player.clickDown
+         * player.clickUp
+         * player.buttonClick
+         * player.buttonDown
+         * player.buttonUp
+         * player.identify
+         *
+         * @return void
+         */
+        conn.on('data', function (data) {
+            data = JSON.parse(data);
+            var action = '';
+            if (data.topic === null) {
+                return;
+            }
+            action = data.topic;
+            if (data.action !== "") {
+                action += '.' + data.action;
+            }
+            var params = {};
+            if (data.data != null) {
+                params = data.data;
+            }
+            params.player = this.player;
+            COUCHFRIENDS.emit(action, params);
+        });
+
+        COUCHFRIENDS.emit('player.join', this.player);
+        conn.send({
             type: 'player.identify',
             data: {
                 color: this.player.color
             }
         });
-        COUCHFRIENDS.emit('player.identify', {color: this.player.color, player: {id: this.player.id}});
+        conn.send({
+            type: 'game.start'
+        });
+        COUCHFRIENDS.emit('player.identify', {
+            color: this.player.color,
+            player: {
+                id: this.player.id
+            }});
+
     });
     conn.on('close', function () {
         COUCHFRIENDS.emit('player.left', {
             player: this.player
         });
-    });
-
-    /**
-     * Receiving data from one of the players.
-     * @param data object from the controller
-     * @param data.topic string The action of the player
-     * player.orientation
-     * player.click
-     * player.clickDown
-     * player.clickUp
-     * player.buttonClick
-     * player.buttonDown
-     * player.buttonUp
-     * player.identify
-     *
-     * @return void
-     */
-    conn.on('data', function (data) {
-        if (data.topic == null) {
-            return;
-        }
-        var params = {};
-        if (data.data != null) {
-            params = data.data;
-        }
-        params.player = this.player;
-        COUCHFRIENDS.emit(data.topic, params);
     });
     COUCHFRIENDS.players.push(player);
     COUCHFRIENDS.showNotification('New player joined.');
@@ -417,7 +412,7 @@ COUCHFRIENDS.on('player.join', function (conn) {
  * @param {object} data list with the player information
  * @param {int} data.player the player object
  */
-COUCHFRIENDS.on('playerLeft', function (data) {
+COUCHFRIENDS.on('player.left', function (data) {
     COUCHFRIENDS.players.splice(COUCHFRIENDS.players.indexOf(data.player), 1);
     COUCHFRIENDS.showNotification('Player left.');
     COUCHFRIENDS.showHideHowToPopup();
@@ -454,9 +449,9 @@ COUCHFRIENDS.on('achievementUnlock', function (data) {
  * @param {float} [data.orientation.y] The y-as orientation (-1 to 1). E.g. 0.12
  * @param {float} [data.orientation.z] The z-as orientation (-1 to 1). E.g. -0.301
  */
-COUCHFRIENDS.on('player.orientation', function (data) {
-    //console.log('Player orientation changed. Player id: ' + data.id + ' Orientation: ' + data.orientation.x + ', ' + data.orientation.y + ', ' + data.orientation.z);
-});
+// COUCHFRIENDS.on('player.orientation', function (data) {
+//     console.log('Player orientation changed. Player id: ' + data.id + ' Orientation: ' + data.orientation.x + ', ' + data.orientation.y + ', ' + data.orientation.z);
+// });
 
 /**
  * Callback when a player changed its name or added additional information like selected color.
